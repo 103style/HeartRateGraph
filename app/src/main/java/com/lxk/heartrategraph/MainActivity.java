@@ -5,9 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.lxk.heartrate.HeartRateGraphWidget;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.lxk.heartrate.bean.HeartRateBean;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +16,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         heartRateGraphWidget = findViewById(R.id.heart_rate);
+        heartRateGraphWidget.setOnItemSelectCallback(
+                new HeartRateGraphWidget.onItemSelectCallback() {
+                    @Override
+                    public void onItemSelected(HeartRateBean heartRateBean) {
+                        System.out.println(heartRateBean.toString());
+                    }
+                });
     }
 
 

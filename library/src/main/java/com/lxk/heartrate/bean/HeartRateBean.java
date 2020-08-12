@@ -29,4 +29,14 @@ public class HeartRateBean {
         this.min = min;
         this.index = index;
     }
+
+    @Override
+    public String toString() {
+        return "HeartRateBean{" +
+                "max=" + max +
+                ", min=" + min +
+                ", index=" + index +
+                ", heartRate=" + heartRate +
+                '}';
+    }
 }

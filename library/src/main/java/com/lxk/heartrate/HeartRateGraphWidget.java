@@ -41,7 +41,7 @@ public class HeartRateGraphWidget extends View {
     /**
      * 当时选中的时间轴类型
      */
-    private int curShowType = WEEK;
+    private int curShowType = DAY;
     /**
      * 时间轴时间文字集合
      */
@@ -57,7 +57,7 @@ public class HeartRateGraphWidget extends View {
     /**
      * 画笔， 线/文字/心率折线图
      */
-    private Paint linePaint, textPaint, dayHeartRatePaint, maxMinPaint, histogramPaint;
+    private Paint linePaint, textPaint, dayHeartRatePaint, maxMinPaint, histogramPaint, selectPaint;
     /**
      * 实线 虚线的高度
      */
@@ -101,7 +101,7 @@ public class HeartRateGraphWidget extends View {
     /**
      * 心率线的间隔
      */
-    private int lineGapHeight;
+    private float lineGapHeight;
     /**
      * 每天显示的心率渐变效果
      */
@@ -114,6 +114,24 @@ public class HeartRateGraphWidget extends View {
      * 柱状图的线 和 点的颜色
      */
     private int histogramLineColor, histogramDotColor;
+
+    /**
+     * 选中item线的宽度和颜色
+     */
+    private float selectLineWidth;
+    private int selectLineColor;
+
+    /**
+     * 是否显示每天的心率折线图的阴影
+     * 是否显示最大最小值
+     * 是否显示测试数据
+     */
+    private boolean showDayShader, showMaxMin, showTestData;
+    /**
+     * 每天的心率折线图的阴影的开始和结束颜色
+     */
+    private int shaderColorStart, shaderColorEnd;
+
     /**
      * 心率数据集合
      */
@@ -128,6 +146,15 @@ public class HeartRateGraphWidget extends View {
      */
     private float contentLeft, contentTop, contentWidth, contentHeight;
 
+    /**
+     * 选中某一时间的回调
+     */
+    private onItemSelectCallback onItemSelectCallback;
+    /**
+     * 选中item的 x坐标
+     */
+    private float selectedPointX = -1;
+
     public HeartRateGraphWidget(Context context) {
         this(context, null);
     }
@@ -141,6 +168,11 @@ public class HeartRateGraphWidget extends View {
         setLayerType(LAYER_TYPE_HARDWARE, null);
         initAttrs(context, attrs);
         init();
+
+        if (showTestData) {
+            timeStrings = getTestList();
+            getTestDataList(getMaxShowItemCount());
+        }
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -151,11 +183,13 @@ public class HeartRateGraphWidget extends View {
         dottedLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_dotted_line_height, 10);
         dottedLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_dotted_line_width, 30);
         dottedLineGap = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_dotted_line_gap, 10);
-        dottedLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_dotted_line_gap, 0x26000000);
+        dottedLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_dotted_line_color, 0x26000000);
 
         markTextColor = ta.getColor(R.styleable.HeartRateGraphWidget_mark_text_color, 0x61000000);
         markTextSize = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_mark_text_size, DensityUtils.dpToPx(context, 10));
+
         timeStringTopMargin = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_time_string_top_margin, 10);
+
         MaxMinTextColor = ta.getColor(R.styleable.HeartRateGraphWidget_max_min_text_color, 0xDE000000);
         MaxMinTextSize = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_max_min_text_size, DensityUtils.dpToPx(context, 10));
         maxMinBlockTopBottomPadding = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_max_min_text_top_bottom_padding, 5);
@@ -171,7 +205,17 @@ public class HeartRateGraphWidget extends View {
 
         histogramWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_histogram_with, DensityUtils.dpToPx(context, 4));
         histogramLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_histogram_line_color, 0xFFD8D8D8);
-        histogramDotColor = ta.getColor(R.styleable.HeartRateGraphWidget_histogram_line_color, 0xFF43B6F4);
+        histogramDotColor = ta.getColor(R.styleable.HeartRateGraphWidget_histogram_dot_color, 0xFF43B6F4);
+
+        selectLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color, 0xFFF33838);
+        selectLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_select_line_width, 10);
+
+        showDayShader = ta.getBoolean(R.styleable.HeartRateGraphWidget_show_day_shader, true);
+        showMaxMin = ta.getBoolean(R.styleable.HeartRateGraphWidget_show_max_min, true);
+        showTestData = ta.getBoolean(R.styleable.HeartRateGraphWidget_show_test_data, false);
+
+        shaderColorStart = ta.getColor(R.styleable.HeartRateGraphWidget_shader_color_start, 0xFFF33838);
+        shaderColorEnd = ta.getColor(R.styleable.HeartRateGraphWidget_shader_color_end, 0x10FF0000);
         ta.recycle();
     }
 
@@ -186,6 +230,11 @@ public class HeartRateGraphWidget extends View {
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         maxMinPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        selectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        selectPaint.setColor(selectLineColor);
+        selectPaint.setStrokeWidth(selectLineWidth);
+        selectPaint.setStyle(Paint.Style.STROKE);
+
         histogramPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         histogramPaint.setStrokeCap(Paint.Cap.ROUND);
 
@@ -196,11 +245,19 @@ public class HeartRateGraphWidget extends View {
     }
 
     /**
+     * 设置选中的回调
+     */
+    public void setOnItemSelectCallback(HeartRateGraphWidget.onItemSelectCallback onItemSelectCallback) {
+        this.onItemSelectCallback = onItemSelectCallback;
+    }
+
+    /**
      * @param type     {@link ShowType}显示的类型
      * @param times    时间轴文字
      * @param dataList 心率数据
      */
     public void updateHeartRateShow(@ShowType int type, List<String> times, List<List<HeartRateBean>> dataList) {
+        reset();
         curShowType = type;
         timeStrings = times;
         this.dataList = dataList;
@@ -213,25 +270,35 @@ public class HeartRateGraphWidget extends View {
      * @param dataList 心率数据
      */
     public void updateHeartRateData(List<List<HeartRateBean>> dataList) {
+        reset();
         this.dataList = dataList;
         postInvalidate();
+    }
+
+    void reset() {
+        touchedX = touchedY = -1;
+        selectedPointX = -1;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        lineGapHeight = getMeasuredHeight() / 3;
         contentLeft = getPaddingLeft();
         contentTop = getPaddingTop();
         contentWidth = getMeasuredWidth() - contentLeft - getPaddingRight();
         contentHeight = getMeasuredHeight() - contentTop - getPaddingBottom();
+        lineGapHeight = contentHeight / 3F;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (dataList == null || dataList.size() == 0) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
+                selectedPointX = -1;
                 touchedX = event.getX();
                 touchedY = event.getY();
                 postInvalidate();
@@ -254,7 +321,6 @@ public class HeartRateGraphWidget extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawLineAndMarkText(canvas);
-
         drawHeartRateGraph(canvas);
     }
 
@@ -292,9 +358,6 @@ public class HeartRateGraphWidget extends View {
      * 时间轴文字
      */
     private void drawTimeLineText(Canvas canvas, float y, float textY) {
-        // TODO: 2020/8/12  测试数据
-        timeStrings = getTestList();
-
         if (timeStrings == null || timeStrings.size() == 0) {
             Log.e(TAG, "----- please set the timeStrings -----");
             return;
@@ -306,17 +369,10 @@ public class HeartRateGraphWidget extends View {
         }
     }
 
-    private List<String> getTestList() {
-        return new ArrayList<>(Arrays.asList("0", "6", "12", "18", "0"));
-    }
-
     /**
      * 画心率图
      */
     private void drawHeartRateGraph(Canvas canvas) {
-        // TODO: 2020/8/12  测试数据
-        getTestDataList(getMaxShowItemCount());
-
         if (dataList == null || dataList.size() == 0) {
             Log.e(TAG, "----- please input the  heart rate dataList -----");
             return;
@@ -327,6 +383,14 @@ public class HeartRateGraphWidget extends View {
             //按天 月显示的柱状图
             drawHistogram(canvas);
         }
+        drawSelectedItem(canvas);
+    }
+
+    private void drawSelectedItem(Canvas canvas) {
+        if (selectedPointX == -1) {
+            return;
+        }
+        canvas.drawLine(selectedPointX, contentTop, selectedPointX, contentTop + lineGapHeight * 2.5F, selectPaint);
     }
 
     /**
@@ -371,6 +435,7 @@ public class HeartRateGraphWidget extends View {
         for (List<HeartRateBean> beans : dataList) {
             for (int i = 0; i < beans.size(); i++) {
                 float x = startX + perX * (beans.get(i).index - 1);
+                checkSelectItem(beans.get(i), x, perX);
                 int rate = beans.get(i).heartRate;
                 float y = startY - rate * preY;
                 if (i == 0) {
@@ -395,23 +460,46 @@ public class HeartRateGraphWidget extends View {
                 }
             }
         }
-        linearGradient = new LinearGradient(getMeasuredWidth() / 2F, maxPosition[1],
-                getMeasuredWidth() / 2F, startY,
-                new int[]{dayHeartRateLineColor, 0x10FF0000},
-                null, Shader.TileMode.CLAMP);
         canvas.drawPath(dayHeartRatePath, dayHeartRatePaint);
-
-        dayHeartRatePaint.setShader(linearGradient);
-        dayHeartRatePaint.setStyle(Paint.Style.FILL);
-        canvas.drawPath(dayHeartRateShaderPath, dayHeartRatePaint);
-        dayHeartRatePaint.setShader(null);
+        if (showDayShader) {
+            linearGradient = new LinearGradient(getMeasuredWidth() / 2F, maxPosition[1],
+                    getMeasuredWidth() / 2F, startY,
+                    new int[]{shaderColorStart, shaderColorEnd},
+                    null, Shader.TileMode.CLAMP);
+            dayHeartRatePaint.setShader(linearGradient);
+            dayHeartRatePaint.setStyle(Paint.Style.FILL);
+            canvas.drawPath(dayHeartRateShaderPath, dayHeartRatePaint);
+            dayHeartRatePaint.setShader(null);
+        }
         drawMaxMin(max, min, maxPosition, minPosition, canvas);
+    }
+
+    /**
+     * 检查是否时选中的item
+     *
+     * @param heartRateBean 包装的心率数据
+     * @param x             当前的 x 坐标
+     * @param perX          当前每个item的所占宽度
+     */
+    private void checkSelectItem(HeartRateBean heartRateBean, float x, float perX) {
+        if (touchedX == -1) {
+            return;
+        }
+        if (Math.abs(x - touchedX) < perX / 4) {
+            selectedPointX = x;
+            if (onItemSelectCallback != null) {
+                onItemSelectCallback.onItemSelected(heartRateBean);
+            }
+        }
     }
 
     /**
      * 绘制 最大最小区域和文字
      */
     private void drawMaxMin(int max, int min, float[] maxPosition, float[] minPosition, Canvas canvas) {
+        if (!showMaxMin) {
+            return;
+        }
         String maxRateString = String.format(maxMinFormat, max);
         String minRateString = String.format(maxMinFormat, min);
         maxMinPaint.setTextSize(MaxMinTextSize);
@@ -471,6 +559,7 @@ public class HeartRateGraphWidget extends View {
         for (List<HeartRateBean> beans : dataList) {
             for (HeartRateBean bean : beans) {
                 float x = getPaddingLeft() + perWidth * bean.index - perWidth / 2;
+                checkSelectItem(bean, x, perWidth);
                 float top = startY - bean.max * preHeight;
                 float bottom = startY - bean.min * preHeight;
                 if (bean.max > max) {
@@ -497,18 +586,56 @@ public class HeartRateGraphWidget extends View {
         drawMaxMin(max, min, maxPosition, minPosition, canvas);
     }
 
+
+    private List<String> getTestList() {
+        return new ArrayList<>(Arrays.asList("0", "6", "12", "18", "0"));
+    }
+
+
     private void getTestDataList(int count) {
         dataList = new ArrayList<>();
-        List<HeartRateBean> list = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            list.add(new HeartRateBean(90 + 5 * i, 60 + 3 * i, i + 1));
+        if (curShowType == DAY) {
+            int i = 1;
+            while (i < 250) {
+                List<HeartRateBean> list = new ArrayList<>();
+                for (int j = 0; j < 30; j++) {
+                    list.add(new HeartRateBean(60 + (int) (Math.random() * 100), i + j));
+                }
+                dataList.add(list);
+                i += 50;
+            }
+        } else {
+            List<HeartRateBean> list = new ArrayList<>();
+            for (int i = 0; i < count; i++) {
+                list.add(new HeartRateBean(90 + 5 * i, 60 + 3 * i, i + 1));
+            }
+            dataList.add(list);
         }
-        dataList.add(list);
     }
 
     @IntDef({DAY, WEEK, MONTH, YEAR})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ShowType {
 
+    }
+
+    /**
+     * 选中莫一个时间点时的回调
+     */
+    public interface onItemSelectCallback {
+        /**
+         * 选中莫一个时间点时
+         *
+         * @param heartRateBean 包装数据
+         */
+        void onItemSelected(HeartRateBean heartRateBean);
+    }
+
+    public class Builder {
+        private int curShowType;
+        private List<String> timeStrings;
+        private float selectLineWidth;
+        private int selectLineColor;
+        private List<List<HeartRateBean>> dataList;
     }
 }

@@ -10,13 +10,19 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c19941f-a14d-43a6-8fc8-bafeefc687f1" name="Default Changelist" comment="" />
+    <list default="true" id="3c19941f-a14d-43a6-8fc8-bafeefc687f1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/library/src/main/java/com/lxk/heartrate/HeartRateGraphWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/library/src/main/java/com/lxk/heartrate/HeartRateGraphWidget.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/library/src/main/res/values/attrs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/library/src/main/res/values/attrs.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_29" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="50c3cedc" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -36,7 +42,11 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1fw2jNmrQpeX1HdQEmFkKjwGyUx" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -44,6 +54,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.project.structure.last.selected" value="SDK Location" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.sdk.path" value="D:/Android/sdk" />
@@ -137,10 +148,10 @@
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="317" y="161" key="#PSD/0.0.1600.860@0.0.1600.860" timestamp="1597116259232" />
-    <state x="898" y="142" key="#com.intellij.ide.util.MemberChooser" timestamp="1597136861691">
+    <state x="898" y="142" key="#com.intellij.ide.util.MemberChooser" timestamp="1597202824361">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state x="898" y="142" key="#com.intellij.ide.util.MemberChooser/0.0.1600.860@0.0.1600.860" timestamp="1597136861691" />
+    <state x="898" y="142" key="#com.intellij.ide.util.MemberChooser/0.0.1600.860@0.0.1600.860" timestamp="1597202824361" />
     <state x="655" y="194" key="AndroidProcessChooserDialog" timestamp="1597124581274">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
@@ -197,21 +208,29 @@
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="301" y="71" key="SettingsEditor/0.0.1600.860@0.0.1600.860" timestamp="1597116248753" />
-    <state x="521" y="170" width="582" height="524" key="StructurePopup" timestamp="1597137629516">
+    <state x="521" y="170" width="582" height="524" key="StructurePopup" timestamp="1597210308883">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state x="521" y="170" width="582" height="524" key="StructurePopup/0.0.1600.860@0.0.1600.860" timestamp="1597137629516" />
+    <state x="521" y="170" width="582" height="524" key="StructurePopup/0.0.1600.860@0.0.1600.860" timestamp="1597210308883" />
     <state x="480" y="253" key="com.intellij.ide.util.TipDialog" timestamp="1597199316334">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="480" y="253" key="com.intellij.ide.util.TipDialog/0.0.1600.860@0.0.1600.860" timestamp="1597199316334" />
-    <state width="366" height="152" key="javadoc.popup.new" timestamp="1597196667195">
+    <state width="366" height="152" key="javadoc.popup.new" timestamp="1597211303879">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="366" height="152" key="javadoc.popup.new/0.0.1600.860@0.0.1600.860" timestamp="1597196667195" />
+    <state width="366" height="152" key="javadoc.popup.new/0.0.1600.860@0.0.1600.860" timestamp="1597211303879" />
     <state x="511" y="71" key="psd.add.module.dependency.panel.dimension" timestamp="1597116258344">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="511" y="71" key="psd.add.module.dependency.panel.dimension/0.0.1600.860@0.0.1600.860" timestamp="1597116258344" />
+    <state x="456" y="195" key="run.anything.popup" timestamp="1597201579815">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state x="456" y="195" key="run.anything.popup/0.0.1600.860@0.0.1600.860" timestamp="1597201579815" />
+    <state x="463" y="180" width="672" height="678" key="search.everywhere.popup" timestamp="1597210446367">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state x="463" y="180" width="672" height="678" key="search.everywhere.popup/0.0.1600.860@0.0.1600.860" timestamp="1597210446367" />
   </component>
 </project>
