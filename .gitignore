@@ -32,6 +32,8 @@
 
 # IDEA
 *.iml
+.idea/
+.idea/*
 */.idea/
 */.idea/.name
 */.idea/inspectionProfiles/profiles_settings.xml
