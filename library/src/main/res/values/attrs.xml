@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="HeartRateGraphWidget">
+        <attr name="dotted_line_height" format="dimension" />
+        <attr name="solid_line_height" format="dimension" />
+        <attr name="dotted_line_width" format="dimension" />
+        <attr name="dotted_line_gap" format="dimension" />
+        <attr name="dotted_line_color" format="color" />
+        <attr name="solid_line_color" format="color" />
+        <attr name="mark_text_size" format="dimension" />
+        <attr name="mark_text_color" format="color" />
+        <attr name="time_string_top_margin" format="dimension" />
+
+        <attr name="max_min_text_size" format="dimension" />
+        <attr name="max_min_text_color" format="color" />
+        <attr name="max_min_text_top_bottom_padding" format="dimension" />
+        <attr name="max_min_text_left_right_padding" format="dimension" />
+        <attr name="max_min_text_triangle_height" format="dimension" />
+        <attr name="max_min_bg_color" format="color" />
+        <attr name="max_min_text_format" format="string" />
+
+        <attr name="day_heart_rate_line_color" format="color" />
+        <attr name="day_heart_rate_line_with" format="dimension" />
+
+        <attr name="histogram_with" format="dimension" />
+        <attr name="histogram_line_color" format="color" />
+        <attr name="histogram_dot_color" format="color" />
+    </declare-styleable>
+
+</resources>
