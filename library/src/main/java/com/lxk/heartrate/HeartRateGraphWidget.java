@@ -41,7 +41,7 @@ public class HeartRateGraphWidget extends View {
     /**
      * 当时选中的时间轴类型
      */
-    private int curShowType = DAY;
+    private int curShowType = WEEK;
     /**
      * 时间轴时间文字集合
      */
@@ -435,7 +435,7 @@ public class HeartRateGraphWidget extends View {
         for (List<HeartRateBean> beans : dataList) {
             for (int i = 0; i < beans.size(); i++) {
                 float x = startX + perX * (beans.get(i).index - 1);
-                checkSelectItem(beans.get(i), x, perX);
+                checkSelectItem(beans.get(i), x, perX / 2);
                 int rate = beans.get(i).heartRate;
                 float y = startY - rate * preY;
                 if (i == 0) {
@@ -479,13 +479,13 @@ public class HeartRateGraphWidget extends View {
      *
      * @param heartRateBean 包装的心率数据
      * @param x             当前的 x 坐标
-     * @param perX          当前每个item的所占宽度
+     * @param range           有效的区间
      */
-    private void checkSelectItem(HeartRateBean heartRateBean, float x, float perX) {
+    private void checkSelectItem(HeartRateBean heartRateBean, float x, float range) {
         if (touchedX == -1) {
             return;
         }
-        if (Math.abs(x - touchedX) < perX / 4) {
+        if (Math.abs(x - touchedX) < range) {
             selectedPointX = x;
             if (onItemSelectCallback != null) {
                 onItemSelectCallback.onItemSelected(heartRateBean);
@@ -559,7 +559,7 @@ public class HeartRateGraphWidget extends View {
         for (List<HeartRateBean> beans : dataList) {
             for (HeartRateBean bean : beans) {
                 float x = getPaddingLeft() + perWidth * bean.index - perWidth / 2;
-                checkSelectItem(bean, x, perWidth);
+                checkSelectItem(bean, x, histogramWidth);
                 float top = startY - bean.max * preHeight;
                 float bottom = startY - bean.min * preHeight;
                 if (bean.max > max) {
