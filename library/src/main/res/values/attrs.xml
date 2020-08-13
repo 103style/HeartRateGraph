@@ -40,6 +40,7 @@
         <attr name="day_heart_rate_line_color" format="color" />
         <!--  每天按分钟显示的折线图 线的宽度  -->
         <attr name="day_heart_rate_line_with" format="dimension" />
+        <!--  每天按分钟显示的折线图最多显示多少个点 -->
         <attr name="day_heart_rate_max_show" format="integer" />
 
         <!--  柱状图的宽度  -->
