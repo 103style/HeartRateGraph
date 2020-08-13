@@ -1,8 +1,8 @@
 package com.lxk.heartrategraph;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.lxk.heartrate.HeartRateGraphWidget;
 import com.lxk.heartrate.bean.HeartRateBean;

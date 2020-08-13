@@ -8,12 +8,13 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Shader;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.annotation.IntDef;
+
 
 import com.lxk.heartrate.bean.HeartRateBean;
 
@@ -41,7 +42,7 @@ public class HeartRateGraphWidget extends View {
     /**
      * 当时选中的时间轴类型
      */
-    private int curShowType = WEEK;
+    private int curShowType = DAY;
     /**
      * 时间轴时间文字集合
      */
@@ -98,6 +99,7 @@ public class HeartRateGraphWidget extends View {
      */
     private int dayHeartRateLineColor;
     private float dayHeartRateLineWidth;
+    private int dayHeartRateMaxShow;
     /**
      * 心率线的间隔
      */
@@ -202,6 +204,7 @@ public class HeartRateGraphWidget extends View {
 
         dayHeartRateLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_day_heart_rate_line_color, 0xFFF33838);
         dayHeartRateLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_day_heart_rate_line_with, 5);
+        dayHeartRateMaxShow = ta.getInt(R.styleable.HeartRateGraphWidget_day_heart_rate_max_show, 120);
 
         histogramWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_histogram_with, DensityUtils.dpToPx(context, 4));
         histogramLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_histogram_line_color, 0xFFD8D8D8);
@@ -400,7 +403,7 @@ public class HeartRateGraphWidget extends View {
         int count;
         switch (curShowType) {
             case DAY:
-                count = 24 * 60 / 5;
+                count = dayHeartRateMaxShow;
                 break;
             case WEEK:
                 count = 7;
@@ -479,7 +482,7 @@ public class HeartRateGraphWidget extends View {
      *
      * @param heartRateBean 包装的心率数据
      * @param x             当前的 x 坐标
-     * @param range           有效的区间
+     * @param range         有效的区间
      */
     private void checkSelectItem(HeartRateBean heartRateBean, float x, float range) {
         if (touchedX == -1) {
@@ -595,15 +598,15 @@ public class HeartRateGraphWidget extends View {
     private void getTestDataList(int count) {
         dataList = new ArrayList<>();
         if (curShowType == DAY) {
-            int i = 1;
-            while (i < 250) {
-                List<HeartRateBean> list = new ArrayList<>();
-                for (int j = 0; j < 30; j++) {
-                    list.add(new HeartRateBean(60 + (int) (Math.random() * 100), i + j));
+            List<HeartRateBean> list = new ArrayList<>();
+            for (int j = 0; j < getMaxShowItemCount(); j++) {
+                if (j == getMaxShowItemCount() / 2) {
+                    list.add(new HeartRateBean(120, j + 1));
+                } else {
+                    list.add(new HeartRateBean(60 + (int) (Math.random() * 20), j + 1));
                 }
-                dataList.add(list);
-                i += 50;
             }
+            dataList.add(list);
         } else {
             List<HeartRateBean> list = new ArrayList<>();
             for (int i = 0; i < count; i++) {
