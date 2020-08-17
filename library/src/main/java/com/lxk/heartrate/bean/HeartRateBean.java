@@ -11,7 +11,7 @@ public class HeartRateBean {
     public int max, min;
     /**
      * 时间对应显示的下标
-     * 从 1 开始计算
+     * 从 0 开始计算
      */
     public int index;
     /**

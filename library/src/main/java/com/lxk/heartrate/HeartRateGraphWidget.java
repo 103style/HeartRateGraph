@@ -201,55 +201,57 @@ public class HeartRateGraphWidget extends View {
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.HeartRateGraphWidget);
 
-        curShowType = ta.getInt(R.styleable.HeartRateGraphWidget_cur_show_type, DAY);
+        curShowType = ta.getInt(R.styleable.HeartRateGraphWidget_hrg_cur_show_type, DAY);
 
-        solidLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_solid_line_height, 10);
-        solidLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_solid_line_color, 0x26000000);
+        solidLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_solid_line_height, 10);
+        solidLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_solid_line_color, 0x26000000);
 
-        dottedLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_dotted_line_height, 10);
-        dottedLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_dotted_line_width, 30);
-        dottedLineGap = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_dotted_line_gap, 10);
-        dottedLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_dotted_line_color, 0x26000000);
-        belowSolidLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_below_solid_line_height, DensityUtils.dpToPx(getContext(), 40));
+        dottedLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_dotted_line_height, 10);
+        dottedLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_dotted_line_width, 30);
+        dottedLineGap = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_dotted_line_gap, 10);
+        dottedLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_dotted_line_color, 0x26000000);
+        belowSolidLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_below_solid_line_height, DensityUtils.dpToPx(getContext(), 40));
 
-        markTextColor = ta.getColor(R.styleable.HeartRateGraphWidget_mark_text_color, 0x61000000);
-        markTextSize = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_mark_text_size, DensityUtils.dpToPx(context, 10));
+        markTextColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_mark_text_color, 0x61000000);
+        markTextSize = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_mark_text_size, DensityUtils.dpToPx(context, 10));
 
-        timeStringTopMargin = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_time_string_top_margin, 10);
+        timeStringTopMargin = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_time_string_top_margin, 10);
 
-        MaxMinTextColor = ta.getColor(R.styleable.HeartRateGraphWidget_max_min_text_color, 0xDE000000);
-        MaxMinTextSize = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_max_min_text_size, DensityUtils.dpToPx(context, 10));
-        maxMinBlockTopBottomPadding = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_max_min_text_top_bottom_padding, 5);
-        maxMinBlockLeftRightPadding = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_max_min_text_left_right_padding, 10);
-        maxMinTriAngleHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_max_min_text_triangle_height, 20);
-        maxMinBgColor = ta.getColor(R.styleable.HeartRateGraphWidget_max_min_bg_color, 0X33398EFF);
-        if (ta.hasValue(R.styleable.HeartRateGraphWidget_max_min_text_format)) {
-            maxMinFormat = ta.getString(R.styleable.HeartRateGraphWidget_max_min_text_format);
+        MaxMinTextColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_max_min_text_color, 0xDE000000);
+        MaxMinTextSize = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_max_min_text_size, DensityUtils.dpToPx(context, 10));
+        maxMinBlockTopBottomPadding = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_max_min_text_top_bottom_padding, 5);
+        maxMinBlockLeftRightPadding = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_max_min_text_left_right_padding, 10);
+        maxMinTriAngleHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_max_min_text_triangle_height, 20);
+        maxMinBgColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_max_min_bg_color, 0X33398EFF);
+        if (ta.hasValue(R.styleable.HeartRateGraphWidget_hrg_max_min_text_format)) {
+            maxMinFormat = ta.getString(R.styleable.HeartRateGraphWidget_hrg_max_min_text_format);
         }
 
-        dayHeartRateLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_day_heart_rate_line_color, 0xFFF33838);
-        dayHeartRateLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_day_heart_rate_line_with, 5);
-        dayHeartRateMaxShow = ta.getInt(R.styleable.HeartRateGraphWidget_day_heart_rate_max_show, 120);
+        dayHeartRateLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_day_heart_rate_line_color, 0xFFF33838);
+        dayHeartRateLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_day_heart_rate_line_with, 5);
+        dayHeartRateMaxShow = ta.getInt(R.styleable.HeartRateGraphWidget_hrg_day_heart_rate_max_show, 120);
+        if (dayHeartRateMaxShow < 2) {
+            dayHeartRateMaxShow = 2;
+        }
+        histogramWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_histogram_with, DensityUtils.dpToPx(context, 4));
+        histogramLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_histogram_line_color, 0xFFD8D8D8);
+        histogramDotColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_histogram_dot_color, 0xFF43B6F4);
 
-        histogramWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_histogram_with, DensityUtils.dpToPx(context, 4));
-        histogramLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_histogram_line_color, 0xFFD8D8D8);
-        histogramDotColor = ta.getColor(R.styleable.HeartRateGraphWidget_histogram_dot_color, 0xFF43B6F4);
+        selectLineColorStart = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_select_line_color_start, 0x2AFF9319);
+        selectLineColorMiddle = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_select_line_color_middle, 0xFFFF9319);
+        selectLineColorEnd = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_select_line_color_end, 0x2AFF9319);
+        selectLineColorInHistogram = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_select_line_color_in_histogram, 0xFFFFA239);
+        selectLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_select_line_width, 10);
 
-        selectLineColorStart = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color_start, 0x2AFF9319);
-        selectLineColorMiddle = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color_middle, 0xFFFF9319);
-        selectLineColorEnd = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color_end, 0x2AFF9319);
-        selectLineColorInHistogram = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color_in_histogram, 0xFFFFA239);
-        selectLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_select_line_width, 10);
+        showDayShader = ta.getBoolean(R.styleable.HeartRateGraphWidget_hrg_show_day_shader, true);
+        showMaxMin = ta.getBoolean(R.styleable.HeartRateGraphWidget_hrg_show_max_min, true);
+        showTestData = ta.getBoolean(R.styleable.HeartRateGraphWidget_hrg_show_test_data, false);
 
-        showDayShader = ta.getBoolean(R.styleable.HeartRateGraphWidget_show_day_shader, true);
-        showMaxMin = ta.getBoolean(R.styleable.HeartRateGraphWidget_show_max_min, true);
-        showTestData = ta.getBoolean(R.styleable.HeartRateGraphWidget_show_test_data, false);
+        shaderColorStart = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_shader_color_start, 0xFFF33838);
+        shaderColorEnd = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_shader_color_end, 0x10FF0000);
 
-        shaderColorStart = ta.getColor(R.styleable.HeartRateGraphWidget_shader_color_start, 0xFFF33838);
-        shaderColorEnd = ta.getColor(R.styleable.HeartRateGraphWidget_shader_color_end, 0x10FF0000);
-
-        heartRateWarnLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_heart_rate_warn_line_color, 0xFFFF0000);
-        heartRateWarnLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_heart_rate_warn_line_height, 5);
+        heartRateWarnLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_heart_rate_warn_line_color, 0xFFFF0000);
+        heartRateWarnLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_heart_rate_warn_line_height, 5);
         ta.recycle();
     }
 
@@ -535,16 +537,16 @@ public class HeartRateGraphWidget extends View {
         dayHeartRatePath.reset();
         dayHeartRateShaderPath.reset();
         int count = getMaxShowItemCount();
-        float perX = contentWidth / (1 + count);
+        float perX = contentWidth / (count - 1);
         float preY = lineGapHeight * 2.5F / MAX_RATE;
         float startY = lineGapHeight * 2.5F + contentTop;
-        float startX = contentLeft + perX / 2F;
+        float startX = contentLeft;
         int max = 0, min = Integer.MAX_VALUE;
         float[] maxPosition = new float[2];
         float[] minPosition = new float[2];
         for (List<HeartRateBean> beans : dataList) {
             for (int i = 0; i < beans.size(); i++) {
-                float x = startX + perX * (beans.get(i).index - 1);
+                float x = startX + perX * beans.get(i).index;
                 checkSelectItem(beans.get(i), x, perX / 2);
                 int rate = beans.get(i).heartRate;
                 float y = startY - rate * preY;
@@ -670,7 +672,7 @@ public class HeartRateGraphWidget extends View {
 
         for (List<HeartRateBean> beans : dataList) {
             for (HeartRateBean bean : beans) {
-                float x = contentLeft + perWidth * bean.index - perWidth / 2;
+                float x = contentLeft + perWidth * (bean.index + 1) - perWidth / 2;
                 checkSelectItem(bean, x, histogramWidth * 2);
                 float top = startY - bean.max * preHeight;
                 float bottom = startY - bean.min * preHeight;
@@ -709,16 +711,16 @@ public class HeartRateGraphWidget extends View {
             List<HeartRateBean> list = new ArrayList<>();
             for (int j = 0; j < getMaxShowItemCount(); j++) {
                 if (j == getMaxShowItemCount() / 2) {
-                    list.add(new HeartRateBean(120, j + 1));
+                    list.add(new HeartRateBean(120, j));
                 } else {
-                    list.add(new HeartRateBean(60 + (int) (Math.random() * 20), j + 1));
+                    list.add(new HeartRateBean(60 + (int) (Math.random() * 20), j));
                 }
             }
             dataList.add(list);
         } else {
             List<HeartRateBean> list = new ArrayList<>();
             for (int i = 0; i < count; i++) {
-                list.add(new HeartRateBean(90 + 5 * i, 60 + 3 * i, i + 1));
+                list.add(new HeartRateBean(90 + 5 * i, 60 + 3 * i, i));
             }
             dataList.add(list);
         }
