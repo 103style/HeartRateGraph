@@ -290,7 +290,6 @@ public class HeartRateGraphWidget extends View {
      */
     public void setCurShowType(@ShowType int curShowType) {
         this.curShowType = curShowType;
-        postInvalidate();
     }
 
     /**
@@ -301,16 +300,10 @@ public class HeartRateGraphWidget extends View {
     }
 
     /**
-     * @param type     {@link ShowType}显示的类型
-     * @param times    时间轴文字
-     * @param dataList 心率数据
+     * 设置时间轴时间
      */
-    public void updateHeartRateShow(@ShowType int type, List<String> times, List<List<HeartRateBean>> dataList) {
-        reset();
-        curShowType = type;
-        timeStrings = times;
-        this.dataList = dataList;
-        postInvalidate();
+    public void setTimeStrings(List<String> timeStrings) {
+        this.timeStrings = timeStrings;
     }
 
     /**
@@ -318,13 +311,29 @@ public class HeartRateGraphWidget extends View {
      *
      * @param dataList 心率数据
      */
-    public void updateHeartRateData(List<List<HeartRateBean>> dataList) {
+    public void setHeartRateDataList(List<List<HeartRateBean>> dataList) {
         reset();
         this.dataList = dataList;
-        postInvalidate();
     }
 
-    void reset() {
+    /**
+     * @param type     {@link ShowType}显示的类型
+     * @param times    时间轴文字
+     * @param dataList 心率数据
+     */
+    public void setHeartRateShow(@ShowType int type, List<String> times, List<List<HeartRateBean>> dataList) {
+        reset();
+        curShowType = type;
+        timeStrings = times;
+        this.dataList = dataList;
+    }
+
+    /**
+     * 重置状态
+     */
+    public void reset() {
+        timeStrings = null;
+        dataList = null;
         linearGradient = null;
         selectLineGradient = null;
         touchedX = touchedY = -1;
@@ -372,12 +381,6 @@ public class HeartRateGraphWidget extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (selectLineGradient == null && curShowType == DAY) {
-            selectLineGradient = new LinearGradient(getMeasuredWidth() / 2F, contentTop,
-                    getMeasuredWidth() / 2F, contentTop + contentHeight,
-                    new int[]{selectLineColorStart, selectLineColorMiddle, selectLineColorEnd},
-                    null, Shader.TileMode.CLAMP);
-        }
         drawLineAndMarkText(canvas);
         drawHeartRateGraph(canvas);
     }
@@ -435,7 +438,7 @@ public class HeartRateGraphWidget extends View {
      */
     private void drawTimeLineText(Canvas canvas, float y, float textY) {
         if (timeStrings == null || timeStrings.size() == 0) {
-            Log.e(TAG, "----- please set the timeStrings -----");
+            Log.e(TAG, "----- please set the timeStrings!!! -----");
             return;
         }
         float perWidth = contentWidth / timeStrings.size();
@@ -450,7 +453,7 @@ public class HeartRateGraphWidget extends View {
      */
     private void drawHeartRateGraph(Canvas canvas) {
         if (dataList == null || dataList.size() == 0) {
-            Log.e(TAG, "----- please input the  heart rate dataList -----");
+            Log.e(TAG, "----- please input the heart rate dataList!!! -----");
             return;
         }
         if (curShowType == DAY) {
@@ -462,6 +465,9 @@ public class HeartRateGraphWidget extends View {
         drawSelectedItem(canvas);
     }
 
+    /**
+     * 绘制当前选中的位置
+     */
     private void drawSelectedItem(Canvas canvas) {
         if (selectedPointX == -1) {
             return;
@@ -469,7 +475,7 @@ public class HeartRateGraphWidget extends View {
         if (curShowType == DAY) {
             selectPaint.setStrokeCap(Paint.Cap.BUTT);
             selectPaint.setStrokeWidth(selectLineWidth);
-            selectPaint.setShader(selectLineGradient);
+            selectPaint.setShader(getSelectLineGradient());
             canvas.drawLine(selectedPointX, contentTop, selectedPointX, contentTop + lineGapHeight * 2.5F, selectPaint);
             return;
         }
@@ -482,6 +488,19 @@ public class HeartRateGraphWidget extends View {
         selectPaint.setStyle(Paint.Style.FILL);
         selectPaint.setColor(selectLineColorInHistogram);
         canvas.drawLine(selectedPointX, selectedHistogramMax + histogramWidth, selectedPointX, selectedHistogramMin - histogramWidth, selectPaint);
+    }
+
+    /**
+     * 获取选中状态的渐变
+     */
+    private LinearGradient getSelectLineGradient() {
+        if (selectLineGradient == null && curShowType == DAY) {
+            selectLineGradient = new LinearGradient(getMeasuredWidth() / 2F, contentTop,
+                    getMeasuredWidth() / 2F, contentTop + contentHeight,
+                    new int[]{selectLineColorStart, selectLineColorMiddle, selectLineColorEnd},
+                    null, Shader.TileMode.CLAMP);
+        }
+        return selectLineGradient;
     }
 
     /**

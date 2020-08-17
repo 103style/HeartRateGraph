@@ -19,7 +19,7 @@ allprojects {
 add to the app  `build.gradle`
 ```
 dependencies {
-        implementation 'com.github.103style:HeartRateGraph:0.0.3'
+        implementation 'com.github.103style:HeartRateGraph:0.0.5'
 }
 
 ```
@@ -144,21 +144,37 @@ dependencies {
 /**
  * 设置选中的回调
  */
-public void setOnItemSelectCallback(HeartRateGraphWidget.onItemSelectCallback onItemSelectCallback) {}
+public void setOnItemSelectCallback(HeartRateGraphWidget.onItemSelectCallback onItemSelectCallback)
+
+
+/**
+ * 设置心跳警告的最大最小值
+ */
+public void setHeartRateWarnMax(int heartRateWarnMax, int heartRateWarnMin)
+
+/**
+ * 更新当前显示状态
+ */
+public void setCurShowType(@ShowType int curShowType)
+
+/**
+ * 设置时间轴时间数据
+ */
+public void setTimeStrings(List<String> timeStrings)
+
+/**
+ * 设置心率数据
+ *
+ * @param dataList 心率数据
+ */
+public void setHeartRateDataList(List<List<HeartRateBean>> dataList)
 
 /**
  * @param type     {@link ShowType}显示的类型
  * @param times    时间轴文字
  * @param dataList 心率数据
  */
-public void updateHeartRateShow(@ShowType int type, List<String> times, List<List<HeartRateBean>> dataList) {}
-
-/**
- * 更新心率数据
- *
- * @param dataList 心率数据
- */
-public void updateHeartRateData(List<List<HeartRateBean>> dataList) {}
+public void setHeartRateShow(@ShowType int type, List<String> times, List<List<HeartRateBean>> dataList)
 ```
 
 ---
