@@ -14,8 +14,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-
-
 import com.lxk.heartrate.bean.HeartRateBean;
 
 import java.lang.annotation.Retention;
@@ -42,7 +40,7 @@ public class HeartRateGraphWidget extends View {
     /**
      * 当时选中的时间轴类型
      */
-    private int curShowType = DAY;
+    private int curShowType;
     /**
      * 时间轴时间文字集合
      */
@@ -71,6 +69,10 @@ public class HeartRateGraphWidget extends View {
      * 虚线 实线的颜色
      */
     private int dottedLineColor, solidLineColor;
+    /**
+     * 实线下方的内容高度
+     */
+    private float belowSolidLineHeight;
     /**
      * 坐标系 标记文字的颜色
      * 最高最低心率的文字颜色
@@ -107,7 +109,7 @@ public class HeartRateGraphWidget extends View {
     /**
      * 每天显示的心率渐变效果
      */
-    private LinearGradient linearGradient;
+    private LinearGradient linearGradient, selectLineGradient;
     /**
      * 柱状图的宽度
      */
@@ -121,7 +123,6 @@ public class HeartRateGraphWidget extends View {
      * 选中item线的宽度和颜色
      */
     private float selectLineWidth;
-    private int selectLineColor;
 
     /**
      * 是否显示每天的心率折线图的阴影
@@ -133,7 +134,23 @@ public class HeartRateGraphWidget extends View {
      * 每天的心率折线图的阴影的开始和结束颜色
      */
     private int shaderColorStart, shaderColorEnd;
+    /**
+     * 选中线的渐变颜色
+     */
+    private int selectLineColorStart, selectLineColorMiddle, selectLineColorEnd;
+    /**
+     * 柱状图选中的颜色
+     */
+    private int selectLineColorInHistogram;
 
+    /**
+     * 心跳警告的最大最小值
+     */
+    private int heartRateWarnMax, heartRateWarnMin;
+    /**
+     * 心跳警告线的颜色和高度
+     */
+    private int heartRateWarnLineColor, heartRateWarnLineHeight;
     /**
      * 心率数据集合
      */
@@ -156,6 +173,10 @@ public class HeartRateGraphWidget extends View {
      * 选中item的 x坐标
      */
     private float selectedPointX = -1;
+    /**
+     * 选中柱状图item的 最大最小坐标
+     */
+    private float selectedHistogramMax = -1, selectedHistogramMin = -1;
 
     public HeartRateGraphWidget(Context context) {
         this(context, null);
@@ -179,6 +200,9 @@ public class HeartRateGraphWidget extends View {
 
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.HeartRateGraphWidget);
+
+        curShowType = ta.getInt(R.styleable.HeartRateGraphWidget_cur_show_type, DAY);
+
         solidLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_solid_line_height, 10);
         solidLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_solid_line_color, 0x26000000);
 
@@ -186,6 +210,7 @@ public class HeartRateGraphWidget extends View {
         dottedLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_dotted_line_width, 30);
         dottedLineGap = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_dotted_line_gap, 10);
         dottedLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_dotted_line_color, 0x26000000);
+        belowSolidLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_below_solid_line_height, DensityUtils.dpToPx(getContext(), 40));
 
         markTextColor = ta.getColor(R.styleable.HeartRateGraphWidget_mark_text_color, 0x61000000);
         markTextSize = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_mark_text_size, DensityUtils.dpToPx(context, 10));
@@ -210,7 +235,10 @@ public class HeartRateGraphWidget extends View {
         histogramLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_histogram_line_color, 0xFFD8D8D8);
         histogramDotColor = ta.getColor(R.styleable.HeartRateGraphWidget_histogram_dot_color, 0xFF43B6F4);
 
-        selectLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color, 0xFFF33838);
+        selectLineColorStart = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color_start, 0x2AFF9319);
+        selectLineColorMiddle = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color_middle, 0xFFFF9319);
+        selectLineColorEnd = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color_end, 0x2AFF9319);
+        selectLineColorInHistogram = ta.getColor(R.styleable.HeartRateGraphWidget_select_line_color_in_histogram, 0xFFFFA239);
         selectLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_select_line_width, 10);
 
         showDayShader = ta.getBoolean(R.styleable.HeartRateGraphWidget_show_day_shader, true);
@@ -219,6 +247,9 @@ public class HeartRateGraphWidget extends View {
 
         shaderColorStart = ta.getColor(R.styleable.HeartRateGraphWidget_shader_color_start, 0xFFF33838);
         shaderColorEnd = ta.getColor(R.styleable.HeartRateGraphWidget_shader_color_end, 0x10FF0000);
+
+        heartRateWarnLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_heart_rate_warn_line_color, 0xFFFF0000);
+        heartRateWarnLineHeight = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_heart_rate_warn_line_height, 5);
         ta.recycle();
     }
 
@@ -234,8 +265,6 @@ public class HeartRateGraphWidget extends View {
         maxMinPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         selectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        selectPaint.setColor(selectLineColor);
-        selectPaint.setStrokeWidth(selectLineWidth);
         selectPaint.setStyle(Paint.Style.STROKE);
 
         histogramPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -245,6 +274,23 @@ public class HeartRateGraphWidget extends View {
         dayHeartRatePaint.setStrokeJoin(Paint.Join.ROUND);
 
         dashPathEffect = new DashPathEffect(new float[]{dottedLineWidth, dottedLineGap}, 0);
+    }
+
+    /**
+     * 设置心跳警告的最大最小值
+     */
+    public void setHeartRateWarnMax(int heartRateWarnMax, int heartRateWarnMin) {
+        this.heartRateWarnMax = heartRateWarnMax;
+        this.heartRateWarnMin = heartRateWarnMin;
+        postInvalidate();
+    }
+
+    /**
+     * 更新当前显示状态
+     */
+    public void setCurShowType(@ShowType int curShowType) {
+        this.curShowType = curShowType;
+        postInvalidate();
     }
 
     /**
@@ -279,7 +325,10 @@ public class HeartRateGraphWidget extends View {
     }
 
     void reset() {
+        linearGradient = null;
+        selectLineGradient = null;
         touchedX = touchedY = -1;
+        selectedHistogramMin = selectedHistogramMax = -1;
         selectedPointX = -1;
     }
 
@@ -290,7 +339,7 @@ public class HeartRateGraphWidget extends View {
         contentTop = getPaddingTop();
         contentWidth = getMeasuredWidth() - contentLeft - getPaddingRight();
         contentHeight = getMeasuredHeight() - contentTop - getPaddingBottom();
-        lineGapHeight = contentHeight / 3F;
+        lineGapHeight = (contentHeight - belowSolidLineHeight) / 2.5F;
     }
 
     @Override
@@ -323,6 +372,12 @@ public class HeartRateGraphWidget extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (selectLineGradient == null && curShowType == DAY) {
+            selectLineGradient = new LinearGradient(getMeasuredWidth() / 2F, contentTop,
+                    getMeasuredWidth() / 2F, contentTop + contentHeight,
+                    new int[]{selectLineColorStart, selectLineColorMiddle, selectLineColorEnd},
+                    null, Shader.TileMode.CLAMP);
+        }
         drawLineAndMarkText(canvas);
         drawHeartRateGraph(canvas);
     }
@@ -354,7 +409,25 @@ public class HeartRateGraphWidget extends View {
         y -= lineGapHeight / 2F;
         linePaint.setStrokeWidth(solidLineHeight);
         canvas.drawLine(contentLeft, y, contentLeft + contentWidth, y, linePaint);
+
+        drawWarnLine(canvas);
         drawTimeLineText(canvas, y + timeStringTopMargin, textY);
+    }
+
+    /**
+     * 绘制警戒线
+     */
+    private void drawWarnLine(Canvas canvas) {
+        linePaint.setStrokeWidth(heartRateWarnLineHeight);
+        linePaint.setColor(heartRateWarnLineColor);
+        if (heartRateWarnMax != 0) {
+            float maxY = lineGapHeight * 2.5f * (250 - heartRateWarnMax) / 250;
+            canvas.drawLine(contentLeft, maxY, contentLeft + contentWidth, maxY, linePaint);
+        }
+        if (heartRateWarnMin != 0) {
+            float minY = lineGapHeight * 2.5f * (250 - heartRateWarnMin) / 250;
+            canvas.drawLine(contentLeft, minY, contentLeft + contentWidth, minY, linePaint);
+        }
     }
 
     /**
@@ -393,7 +466,22 @@ public class HeartRateGraphWidget extends View {
         if (selectedPointX == -1) {
             return;
         }
-        canvas.drawLine(selectedPointX, contentTop, selectedPointX, contentTop + lineGapHeight * 2.5F, selectPaint);
+        if (curShowType == DAY) {
+            selectPaint.setStrokeCap(Paint.Cap.BUTT);
+            selectPaint.setStrokeWidth(selectLineWidth);
+            selectPaint.setShader(selectLineGradient);
+            canvas.drawLine(selectedPointX, contentTop, selectedPointX, contentTop + lineGapHeight * 2.5F, selectPaint);
+            return;
+        }
+        if (selectedHistogramMin == -1) {
+            return;
+        }
+        selectPaint.setShader(null);
+        selectPaint.setStrokeCap(Paint.Cap.ROUND);
+        selectPaint.setStrokeWidth(histogramWidth);
+        selectPaint.setStyle(Paint.Style.FILL);
+        selectPaint.setColor(selectLineColorInHistogram);
+        canvas.drawLine(selectedPointX, selectedHistogramMax + histogramWidth, selectedPointX, selectedHistogramMin - histogramWidth, selectPaint);
     }
 
     /**
@@ -465,11 +553,14 @@ public class HeartRateGraphWidget extends View {
         }
         canvas.drawPath(dayHeartRatePath, dayHeartRatePaint);
         if (showDayShader) {
-            linearGradient = new LinearGradient(getMeasuredWidth() / 2F, maxPosition[1],
-                    getMeasuredWidth() / 2F, startY,
-                    new int[]{shaderColorStart, shaderColorEnd},
-                    null, Shader.TileMode.CLAMP);
+            if (linearGradient == null) {
+                linearGradient = new LinearGradient(getMeasuredWidth() / 2F, maxPosition[1],
+                        getMeasuredWidth() / 2F, startY,
+                        new int[]{shaderColorStart, shaderColorEnd},
+                        null, Shader.TileMode.CLAMP);
+            }
             dayHeartRatePaint.setShader(linearGradient);
+            canvas.drawPath(dayHeartRateShaderPath, dayHeartRatePaint);
             dayHeartRatePaint.setStyle(Paint.Style.FILL);
             canvas.drawPath(dayHeartRateShaderPath, dayHeartRatePaint);
             dayHeartRatePaint.setShader(null);
@@ -519,7 +610,6 @@ public class HeartRateGraphWidget extends View {
         configMaxMinRatePath(minRatePath, minPosition, minRateTotalLen, height, false);
         canvas.drawPath(minRatePath, maxMinPaint);
         maxMinPaint.setColor(MaxMinTextColor);
-        maxMinPaint.setStyle(Paint.Style.STROKE);
         canvas.drawText(maxRateString, maxPosition[0] - maxRateLen / 2,
                 maxPosition[1] - maxMinTriAngleHeight - height + maxMinBlockTopBottomPadding - maxMinPaint.ascent(),
                 maxMinPaint);
@@ -561,10 +651,14 @@ public class HeartRateGraphWidget extends View {
 
         for (List<HeartRateBean> beans : dataList) {
             for (HeartRateBean bean : beans) {
-                float x = getPaddingLeft() + perWidth * bean.index - perWidth / 2;
-                checkSelectItem(bean, x, histogramWidth);
+                float x = contentLeft + perWidth * bean.index - perWidth / 2;
+                checkSelectItem(bean, x, histogramWidth * 2);
                 float top = startY - bean.max * preHeight;
                 float bottom = startY - bean.min * preHeight;
+                if (Float.valueOf(selectedPointX).equals(x)) {
+                    selectedHistogramMax = top;
+                    selectedHistogramMin = bottom;
+                }
                 if (bean.max > max) {
                     max = bean.max;
                     maxPosition[0] = x;
@@ -579,11 +673,6 @@ public class HeartRateGraphWidget extends View {
                 histogramPaint.setStrokeWidth(histogramWidth);
                 histogramPaint.setColor(histogramLineColor);
                 canvas.drawLine(x, top + histogramWidth, x, bottom - histogramWidth, histogramPaint);
-                histogramPaint.setColor(histogramDotColor);
-                histogramPaint.setStyle(Paint.Style.FILL);
-                float radius = histogramWidth / 2;
-                canvas.drawCircle(x, top + radius, radius, histogramPaint);
-                canvas.drawCircle(x, bottom - radius, radius, histogramPaint);
             }
         }
         drawMaxMin(max, min, maxPosition, minPosition, canvas);
@@ -632,13 +721,5 @@ public class HeartRateGraphWidget extends View {
          * @param heartRateBean 包装数据
          */
         void onItemSelected(HeartRateBean heartRateBean);
-    }
-
-    public class Builder {
-        private int curShowType;
-        private List<String> timeStrings;
-        private float selectLineWidth;
-        private int selectLineColor;
-        private List<List<HeartRateBean>> dataList;
     }
 }

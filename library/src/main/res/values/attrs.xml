@@ -2,6 +2,13 @@
 <resources>
 
     <declare-styleable name="HeartRateGraphWidget">
+        <!-- 当前的显示格式 -->
+        <attr name="cur_show_type" format="integer">
+            <flag name="DAY" value="0" />
+            <flag name="WEEK" value="1" />
+            <flag name="MONTH" value="2" />
+            <flag name="YEAR" value="3" />
+        </attr>
         <!--  虚线的高度   -->
         <attr name="dotted_line_height" format="dimension" />
         <!--  虚线的宽度  -->
@@ -20,6 +27,8 @@
         <attr name="mark_text_color" format="color" />
         <!--  时间轴/x轴 文字和线的距离 -->
         <attr name="time_string_top_margin" format="dimension" />
+        <!-- 时间轴/x轴 下方的高度  -->
+        <attr name="below_solid_line_height" format="dimension" />
 
         <!--  最大最小文字的大小 -->
         <attr name="max_min_text_size" format="dimension" />
@@ -52,8 +61,16 @@
 
         <!-- 标记选中item的线的宽度 -->
         <attr name="select_line_width" format="dimension" />
+
         <!-- 标记选中item的线的颜色 -->
-        <attr name="select_line_color" format="color" />
+        <attr name="select_line_color_start" format="color" />
+        <attr name="select_line_color_middle" format="color" />
+        <attr name="select_line_color_end" format="color" />
+        <attr name="select_line_color_in_histogram" format="color" />
+
+        <!-- 心跳预警线的颜色 和 高度  以及是否显示 -->
+        <attr name="heart_rate_warn_line_color" format="color" />
+        <attr name="heart_rate_warn_line_height" format="dimension" />
 
         <!-- 是否显示每天的心率折线图的阴影 -->
         <attr name="show_day_shader" format="boolean" />
