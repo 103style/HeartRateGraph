@@ -1,87 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="HeartRateGraphWidget">
-        <!-- 当前的显示格式 -->
-        <attr name="hrg_cur_show_type" format="integer">
-            <flag name="DAY" value="0" />
-            <flag name="WEEK" value="1" />
-            <flag name="MONTH" value="2" />
-            <flag name="YEAR" value="3" />
-        </attr>
-        <!--  虚线的高度   -->
-        <attr name="hrg_dotted_line_height" format="dimension" />
-        <!--  虚线的宽度  -->
-        <attr name="hrg_dotted_line_width" format="dimension" />
-        <!--  虚线的空白间隔   -->
-        <attr name="hrg_dotted_line_gap" format="dimension" />
-        <!--  虚线的颜色   -->
-        <attr name="hrg_dotted_line_color" format="color" />
-        <!--  实线的高度   -->
-        <attr name="hrg_solid_line_height" format="dimension" />
-        <!--  实线的颜色   -->
-        <attr name="hrg_solid_line_color" format="color" />
-        <!--  坐标系标记的文字大小  x,y轴的标记  -->
-        <attr name="hrg_mark_text_size" format="dimension" />
-        <!--  坐标系标记的文字颜色  x,y轴的标记 -->
-        <attr name="hrg_mark_text_color" format="color" />
-        <!--  时间轴/x轴 文字和线的距离 -->
-        <attr name="hrg_time_string_top_margin" format="dimension" />
-        <!-- 时间轴/x轴 下方的高度  -->
-        <attr name="hrg_below_solid_line_height" format="dimension" />
+<declare-styleable name="HeartRateGraphWidget">
+    <!-- 当前的显示格式 -->
+    <attr name="hrg_cur_show_type" format="integer">
+        <flag name="DAY" value="0" />
+        <flag name="WEEK" value="1" />
+        <flag name="MONTH" value="2" />
+        <flag name="YEAR" value="3" />
+    </attr>
 
-        <!--  最大最小文字的大小 -->
-        <attr name="hrg_max_min_text_size" format="dimension" />
-        <!--  最大最小文字的颜色 -->
-        <attr name="hrg_max_min_text_color" format="color" />
-        <!--  最大最小文字的上下边距 -->
-        <attr name="hrg_max_min_text_top_bottom_padding" format="dimension" />
-        <!--  最大最小文字的左右边距 -->
-        <attr name="hrg_max_min_text_left_right_padding" format="dimension" />
-        <!--  最大最小文字的背景三角形的高度 -->
-        <attr name="hrg_max_min_text_triangle_height" format="dimension" />
-        <!--  最大最小文字的背景颜色 -->
-        <attr name="hrg_max_min_bg_color" format="color" />
-        <!--  最大最小文字的文字格式 -->
-        <attr name="hrg_max_min_text_format" format="string" />
+    <!--  虚线的高度   -->
+    <attr name="hrg_dotted_line_height" format="dimension" />
+    <!--  虚线的宽度  -->
+    <attr name="hrg_dotted_line_width" format="dimension" />
+    <!--  虚线的空白间隔   -->
+    <attr name="hrg_dotted_line_gap" format="dimension" />
+    <!--  虚线的颜色   -->
+    <attr name="hrg_dotted_line_color" format="color" />
+    <!--  实线的高度   -->
+    <attr name="hrg_solid_line_height" format="dimension" />
+    <!--  实线的颜色   -->
+    <attr name="hrg_solid_line_color" format="color" />
 
-        <!--  每天按分钟显示的折线图 线的颜色  -->
-        <attr name="hrg_day_heart_rate_line_color" format="color" />
-        <!--  每天按分钟显示的折线图 线的宽度  -->
-        <attr name="hrg_day_heart_rate_line_with" format="dimension" />
-        <!--  每天按分钟显示的折线图最多显示多少个点 -->
-        <attr name="hrg_day_heart_rate_max_show" format="integer" />
 
-        <!--  柱状图的宽度  -->
-        <attr name="hrg_histogram_with" format="dimension" />
-        <!--  柱状图线的颜色  -->
-        <attr name="hrg_histogram_line_color" format="color" />
-        <!--  柱状图圆点的颜色  -->
-        <attr name="hrg_histogram_dot_color" format="color" />
+    <!-- y轴的数据 -->
+    <attr name="hrg_y_value_string_array" format="reference" />
+    <!--  坐标系标记的文字大小  x,y轴的标记  -->
+    <attr name="hrg_mark_text_size" format="dimension" />
+    <!--  坐标系标记的文字颜色  x,y轴的标记 -->
+    <attr name="hrg_mark_text_color" format="color" />
+    <!-- 时间线和 坐标轴 x轴的距离 -->
+    <attr name="hrg_time_line_to_x_line_height" format="dimension" />
+    <!--  时间轴 下方距离 -->
+    <attr name="hrg_time_line_bottom_margin" format="dimension" />
+    <!--  时间轴 文字和线的距离 -->
+    <attr name="hrg_time_string_top_margin" format="dimension" />
 
-        <!-- 标记选中item的线的宽度 -->
-        <attr name="hrg_select_line_width" format="dimension" />
+    <!--  最大最小文字的大小 -->
+    <attr name="hrg_max_min_text_size" format="dimension" />
+    <!--  最大最小文字的颜色 -->
+    <attr name="hrg_max_min_text_color" format="color" />
+    <!--  最大最小文字的上下边距 -->
+    <attr name="hrg_max_min_text_top_bottom_padding" format="dimension" />
+    <!--  最大最小文字的左右边距 -->
+    <attr name="hrg_max_min_text_left_right_padding" format="dimension" />
+    <!--  最大最小文字的背景三角形的高度 -->
+    <attr name="hrg_max_min_text_triangle_height" format="dimension" />
+    <!--  最大最小文字的背景颜色 -->
+    <attr name="hrg_max_min_bg_color" format="color" />
+    <!--  最大最小文字的文字格式 -->
+    <attr name="hrg_max_min_text_format" format="string" />
 
-        <!-- 标记选中item的线的颜色 -->
-        <attr name="hrg_select_line_color_start" format="color" />
-        <attr name="hrg_select_line_color_middle" format="color" />
-        <attr name="hrg_select_line_color_end" format="color" />
-        <attr name="hrg_select_line_color_in_histogram" format="color" />
+    <!--  每天按分钟显示的折线图 线的颜色  -->
+    <attr name="hrg_day_heart_rate_line_color" format="color" />
+    <!--  每天按分钟显示的折线图 线的宽度  -->
+    <attr name="hrg_day_heart_rate_line_with" format="dimension" />
+    <!--  每天按分钟显示的折线图最多显示多少个点  默认 144个点-->
+    <attr name="hrg_day_heart_rate_dot_max_show" format="integer" />
 
-        <!-- 心跳预警线的颜色 和 高度  以及是否显示 -->
-        <attr name="hrg_heart_rate_warn_line_color" format="color" />
-        <attr name="hrg_heart_rate_warn_line_height" format="dimension" />
+    <!--  柱状图的宽度  -->
+    <attr name="hrg_histogram_with" format="dimension" />
+    <!--  柱状图线的颜色  -->
+    <attr name="hrg_histogram_line_color" format="color" />
 
-        <!-- 是否显示每天的心率折线图的阴影 -->
-        <attr name="hrg_show_day_shader" format="boolean" />
-        <!--  折线图的阴影的渐变颜色的开始和结束 -->
-        <attr name="hrg_shader_color_start" format="color" />
-        <attr name="hrg_shader_color_end" format="color" />
-        <!-- 是否显示最大最小值 -->
-        <attr name="hrg_show_max_min" format="boolean" />
-        <!-- 是否显示测试数据 -->
-        <attr name="hrg_show_test_data" format="boolean" />
+    <!-- 标记选中item的线的宽度 -->
+    <attr name="hrg_select_line_width" format="dimension" />
+    <!-- 标记选中item的线的颜色 -->
+    <attr name="hrg_select_line_color_start" format="color" />
+    <attr name="hrg_select_line_color_middle" format="color" />
+    <attr name="hrg_select_line_color_end" format="color" />
+    <attr name="hrg_select_line_color_in_histogram" format="color" />
 
-    </declare-styleable>
+    <!-- 心跳预警线的颜色 和 高度  以及是否显示 -->
+    <attr name="hrg_heart_rate_warn_line_color" format="color" />
+    <attr name="hrg_heart_rate_warn_line_height" format="dimension" />
+
+    <!-- 是否显示每天的心率折线图的阴影 -->
+    <attr name="hrg_show_day_shader" format="boolean" />
+    <!--  折线图的阴影的渐变颜色的开始和结束 -->
+    <attr name="hrg_shader_color_start" format="color" />
+    <attr name="hrg_shader_color_end" format="color" />
+
+    <!-- 是否显示最大最小值 -->
+    <attr name="hrg_show_max_min" format="boolean" />
+
+    <!-- 是否显示测试数据 -->
+    <attr name="hrg_show_test_data" format="boolean" />
+
+</declare-styleable>
 
 </resources>

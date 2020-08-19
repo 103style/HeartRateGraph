@@ -2,7 +2,7 @@ package com.lxk.heartrategraph;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
+import android.view.View;
 
 import com.lxk.heartrate.HeartRateGraphWidget;
 import com.lxk.heartrate.bean.HeartRateBean;
@@ -23,6 +23,22 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println(heartRateBean.toString());
                     }
                 });
+
+        findViewById(R.id.day).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                heartRateGraphWidget.setCurShowType(HeartRateGraphWidget.WEEK);
+                heartRateGraphWidget.postInvalidate();
+            }
+        });
+
+        findViewById(R.id.minute).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                heartRateGraphWidget.setCurShowType(HeartRateGraphWidget.DAY);
+                heartRateGraphWidget.postInvalidate();
+            }
+        });
     }
 
 

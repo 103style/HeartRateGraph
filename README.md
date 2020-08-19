@@ -19,7 +19,7 @@ allprojects {
 add to the app  `build.gradle`
 ```
 dependencies {
-        implementation 'com.github.103style:HeartRateGraph:0.0.6'
+        implementation 'com.github.103style:HeartRateGraph:0.0.7'
 }
 
 ```
@@ -35,20 +35,20 @@ dependencies {
     android:layout_margin="16dp"
     android:background="#FFFFFF"
     android:padding="24dp"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
-    app:hrg_below_solid_line_height="40dp"
     app:hrg_cur_show_type="DAY"
+    app:hrg_day_heart_rate_dot_max_show="50"
     app:hrg_day_heart_rate_line_color="#FFF33838"
     app:hrg_day_heart_rate_line_with="1dp"
-    app:hrg_day_heart_rate_max_show="100"
     app:hrg_dotted_line_color="#26000000"
     app:hrg_dotted_line_gap="1dp"
     app:hrg_dotted_line_height="1dp"
     app:hrg_dotted_line_width="3dp"
+    app:hrg_heart_rate_warn_line_color="#FFDE0000"
     app:hrg_heart_rate_warn_line_height="1dp"
+    app:hrg_histogram_line_color="#FFFFCC95"
+    app:hrg_histogram_with="4dp"
     app:hrg_mark_text_color="#61000000"
-    app:hrg_mark_text_size="14sp"
+    app:hrg_mark_text_size="10sp"
     app:hrg_max_min_bg_color="@color/colorAccent"
     app:hrg_max_min_text_color="@android:color/black"
     app:hrg_max_min_text_format="%d bmp"
@@ -56,15 +56,22 @@ dependencies {
     app:hrg_max_min_text_size="12sp"
     app:hrg_max_min_text_top_bottom_padding="2dp"
     app:hrg_max_min_text_triangle_height="5dp"
+    app:hrg_select_line_color_end="#00FF9319"
+    app:hrg_select_line_color_in_histogram="#FFFF8700"
+    app:hrg_select_line_color_middle="#FFFF9319"
+    app:hrg_select_line_color_start="#2AFF9319"
     app:hrg_select_line_width="1dp"
-    app:hrg_shader_color_end="#1AF33838"
+    app:hrg_shader_color_end="#00F33838"
     app:hrg_shader_color_start="#B3F33838"
     app:hrg_show_day_shader="true"
-    app:hrg_show_max_min="true"
+    app:hrg_show_max_min="false"
     app:hrg_show_test_data="true"
     app:hrg_solid_line_color="#26000000"
     app:hrg_solid_line_height="1dp"
-    app:hrg_time_string_top_margin="16dp" />
+    app:hrg_time_line_bottom_margin="40dp"
+    app:hrg_time_line_to_x_line_height="35dp"
+    app:hrg_time_string_top_margin="16dp"
+    app:hrg_y_value_string_array="@array/y_values" />
 ```
 
 ---
@@ -72,6 +79,14 @@ dependencies {
 ### attr:
 ```
 <declare-styleable name="HeartRateGraphWidget">
+    <!-- 当前的显示格式 -->
+    <attr name="hrg_cur_show_type" format="integer">
+        <flag name="DAY" value="0" />
+        <flag name="WEEK" value="1" />
+        <flag name="MONTH" value="2" />
+        <flag name="YEAR" value="3" />
+    </attr>
+
     <!--  虚线的高度   -->
     <attr name="hrg_dotted_line_height" format="dimension" />
     <!--  虚线的宽度  -->
@@ -84,11 +99,19 @@ dependencies {
     <attr name="hrg_solid_line_height" format="dimension" />
     <!--  实线的颜色   -->
     <attr name="hrg_solid_line_color" format="color" />
+
+
+    <!-- y轴的数据 -->
+    <attr name="hrg_y_value_string_array" format="reference" />
     <!--  坐标系标记的文字大小  x,y轴的标记  -->
     <attr name="hrg_mark_text_size" format="dimension" />
     <!--  坐标系标记的文字颜色  x,y轴的标记 -->
     <attr name="hrg_mark_text_color" format="color" />
-    <!--  时间轴/x轴 文字和线的距离 -->
+    <!-- 时间线和 坐标轴 x轴的距离 -->
+    <attr name="hrg_time_line_to_x_line_height" format="dimension" />
+    <!--  时间轴 下方距离 -->
+    <attr name="hrg_time_line_bottom_margin" format="dimension" />
+    <!--  时间轴 文字和线的距离 -->
     <attr name="hrg_time_string_top_margin" format="dimension" />
 
     <!--  最大最小文字的大小 -->
@@ -110,28 +133,35 @@ dependencies {
     <attr name="hrg_day_heart_rate_line_color" format="color" />
     <!--  每天按分钟显示的折线图 线的宽度  -->
     <attr name="hrg_day_heart_rate_line_with" format="dimension" />
-    <!--  每天按分钟显示的折线图最多显示多少个点 -->
-    <attr name="hrg_day_heart_rate_max_show" format="integer" />
+    <!--  每天按分钟显示的折线图最多显示多少个点  默认 144个点-->
+    <attr name="hrg_day_heart_rate_dot_max_show" format="integer" />
 
     <!--  柱状图的宽度  -->
     <attr name="hrg_histogram_with" format="dimension" />
     <!--  柱状图线的颜色  -->
     <attr name="hrg_histogram_line_color" format="color" />
-    <!--  柱状图圆点的颜色  -->
-    <attr name="hrg_histogram_dot_color" format="color" />
 
     <!-- 标记选中item的线的宽度 -->
     <attr name="hrg_select_line_width" format="dimension" />
     <!-- 标记选中item的线的颜色 -->
-    <attr name="hrg_select_line_color" format="color" />
+    <attr name="hrg_select_line_color_start" format="color" />
+    <attr name="hrg_select_line_color_middle" format="color" />
+    <attr name="hrg_select_line_color_end" format="color" />
+    <attr name="hrg_select_line_color_in_histogram" format="color" />
+
+    <!-- 心跳预警线的颜色 和 高度  以及是否显示 -->
+    <attr name="hrg_heart_rate_warn_line_color" format="color" />
+    <attr name="hrg_heart_rate_warn_line_height" format="dimension" />
 
     <!-- 是否显示每天的心率折线图的阴影 -->
     <attr name="hrg_show_day_shader" format="boolean" />
     <!--  折线图的阴影的渐变颜色的开始和结束 -->
     <attr name="hrg_shader_color_start" format="color" />
     <attr name="hrg_shader_color_end" format="color" />
+
     <!-- 是否显示最大最小值 -->
     <attr name="hrg_show_max_min" format="boolean" />
+
     <!-- 是否显示测试数据 -->
     <attr name="hrg_show_test_data" format="boolean" />
 
