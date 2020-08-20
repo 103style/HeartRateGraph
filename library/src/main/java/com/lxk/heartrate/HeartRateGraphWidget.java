@@ -549,7 +549,7 @@ public class HeartRateGraphWidget extends View {
                 count = 7;
                 break;
             case MONTH:
-                count = 30;
+                count = 31;
                 break;
             default:
                 count = 12;
