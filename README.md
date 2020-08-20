@@ -19,7 +19,7 @@ allprojects {
 add to the app  `build.gradle`
 ```
 dependencies {
-        implementation 'com.github.103style:HeartRateGraph:0.0.7'
+        implementation 'com.github.103style:HeartRateGraph:0.0.8'
 }
 
 ```

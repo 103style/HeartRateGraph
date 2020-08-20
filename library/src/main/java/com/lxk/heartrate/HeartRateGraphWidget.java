@@ -81,7 +81,7 @@ public class HeartRateGraphWidget extends View {
      * Y轴值每个 1 对应的高度
      * X 轴 对应的 y 坐标
      */
-    private float maxYValue = -1, yValuePerHeight, xLineYPosition;
+    private float maxYValue = -1, yValuePerHeight, xLineYPosition, maxYValueWidth;
     /**
      * 坐标系 标记文字的大小
      * 最高最低心率的文字大小
@@ -222,12 +222,14 @@ public class HeartRateGraphWidget extends View {
         markTextColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_mark_text_color, 0x61000000);
         markTextSize = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_mark_text_size, DensityUtils.dpToPx(context, 10));
         CharSequence[] arr = ta.getTextArray(R.styleable.HeartRateGraphWidget_hrg_y_value_string_array);
-        if (arr != null) {
+        if (arr != null && arr.length > 0) {
             yValues = new String[arr.length];
             for (int i = 0; i < arr.length; i++) {
                 yValues[i] = arr[i].toString();
                 maxYValue = Math.max(Float.parseFloat(yValues[i]), maxYValue);
             }
+        } else {
+            throw new IllegalArgumentException("please add attr 'hrg_y_value_string_array' for HeartRateGraphWidget in the xml!!!");
         }
         timeStringTopMargin = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_time_string_top_margin, 10);
         timeLineToXLineMargin = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_time_line_to_x_line_height, 0);
@@ -427,11 +429,13 @@ public class HeartRateGraphWidget extends View {
         float textHeight = textPaint.descent() - textPaint.ascent();
         float textY = textHeight - textPaint.descent() + dottedLineHeight;
         dashPath.reset();
+        maxYValueWidth = 0;
         for (int i = 0; i < yValues.length; i++) {
             float valueY = contentTop + yValuePerHeight * (maxYValue - Float.parseFloat(yValues[i]));
             dashPath.moveTo(contentLeft, valueY);
             dashPath.lineTo(contentLeft + contentWidth, valueY);
             canvas.drawText(yValues[i], contentLeft, textY + valueY, textPaint);
+            maxYValueWidth = Math.max(maxMinBgColor, textPaint.measureText(yValues[i]) * 3F / 2);
         }
         canvas.drawPath(dashPath, linePaint);
         linePaint.setPathEffect(null);
@@ -469,9 +473,10 @@ public class HeartRateGraphWidget extends View {
             Log.e(TAG, "----- please set the timeStrings!!! -----");
             return;
         }
-        float perWidth = contentWidth / timeStrings.size();
+        float perWidth = (contentWidth - maxYValueWidth) / timeStrings.size();
         for (int i = 0; i < timeStrings.size(); i++) {
-            float x = contentLeft + perWidth * i + (perWidth - textPaint.measureText(timeStrings.get(i))) / 2;
+            float x = contentLeft + maxYValueWidth + perWidth * i
+                    + (perWidth - textPaint.measureText(timeStrings.get(i))) / 2;
             canvas.drawText(timeStrings.get(i), x, y + textY, textPaint);
         }
     }
@@ -563,9 +568,9 @@ public class HeartRateGraphWidget extends View {
         dayHeartRatePath.reset();
         dayHeartRateShaderPath.reset();
         int count = getMaxShowItemCount();
-        float perX = contentWidth / (count - 1);
+        float perX = (contentWidth - maxYValueWidth) / (count - 1);
         float preY = yValuePerHeight;
-        float startX = contentLeft;
+        float startX = contentLeft + maxYValueWidth;
         int max = 0, min = Integer.MAX_VALUE;
         float[] maxPosition = new float[2];
         float[] minPosition = new float[2];
@@ -694,7 +699,7 @@ public class HeartRateGraphWidget extends View {
      */
     private void drawHistogram(Canvas canvas) {
         int count = getMaxShowItemCount();
-        float perWidth = (getMeasuredWidth() - getPaddingRight() - getPaddingLeft()) * 1.0F / count;
+        float perWidth = (contentWidth - maxYValueWidth) * 1.0F / count;
         float preHeight = yValuePerHeight;
 
         int max = 0, min = Integer.MAX_VALUE;
@@ -703,7 +708,7 @@ public class HeartRateGraphWidget extends View {
 
         for (List<HeartRateBean> beans : dataList) {
             for (HeartRateBean bean : beans) {
-                float x = contentLeft + perWidth * (bean.index + 1) - perWidth / 2 - histogramWidth / 2;
+                float x = contentLeft + maxYValueWidth + perWidth * (bean.index + 1) - perWidth / 2 - histogramWidth / 2;
                 checkSelectItem(bean, x, histogramWidth * 2);
                 float top = xLineYPosition - bean.max * preHeight;
                 float bottom = xLineYPosition - bean.min * preHeight;
@@ -760,7 +765,7 @@ public class HeartRateGraphWidget extends View {
         } else {
             List<HeartRateBean> list = new ArrayList<>();
             for (int i = 0; i < count; i++) {
-                list.add(new HeartRateBean(90 + 5 * i, 60 + 3 * i, i));
+                list.add(new HeartRateBean(90 + i, 60 + i, i));
             }
             dataList.add(list);
         }
