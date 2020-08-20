@@ -435,7 +435,7 @@ public class HeartRateGraphWidget extends View {
             dashPath.moveTo(contentLeft, valueY);
             dashPath.lineTo(contentLeft + contentWidth, valueY);
             canvas.drawText(yValues[i], contentLeft, textY + valueY, textPaint);
-            maxYValueWidth = Math.max(maxMinBgColor, textPaint.measureText(yValues[i]) * 3F / 2);
+            maxYValueWidth = Math.max(maxYValueWidth, textPaint.measureText(yValues[i]) * 3F / 2);
         }
         canvas.drawPath(dashPath, linePaint);
         linePaint.setPathEffect(null);
