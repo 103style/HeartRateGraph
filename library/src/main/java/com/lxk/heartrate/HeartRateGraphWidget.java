@@ -296,61 +296,6 @@ public class HeartRateGraphWidget extends View {
     }
 
     /**
-     * 设置心跳警告的最大最小值
-     */
-    public void setHeartRateWarnMax(int heartRateWarnMax, int heartRateWarnMin) {
-        this.heartRateWarnMax = heartRateWarnMax;
-        this.heartRateWarnMin = heartRateWarnMin;
-        postInvalidate();
-    }
-
-    /**
-     * 更新当前显示状态
-     */
-    public void setCurShowType(@ShowType int curShowType) {
-        this.curShowType = curShowType;
-        if (showTestData) {
-            getTestDataList(getMaxShowItemCount());
-        }
-    }
-
-    /**
-     * 设置选中的回调
-     */
-    public void setOnItemSelectCallback(HeartRateGraphWidget.onItemSelectCallback onItemSelectCallback) {
-        this.onItemSelectCallback = onItemSelectCallback;
-    }
-
-    /**
-     * 设置时间轴时间
-     */
-    public void setTimeStrings(List<String> timeStrings) {
-        this.timeStrings = timeStrings;
-    }
-
-    /**
-     * 更新心率数据
-     *
-     * @param dataList 心率数据
-     */
-    public void setHeartRateDataList(List<List<HeartRateBean>> dataList) {
-        reset();
-        this.dataList = dataList;
-    }
-
-    /**
-     * @param type     {@link ShowType}显示的类型
-     * @param times    时间轴文字
-     * @param dataList 心率数据
-     */
-    public void setHeartRateShow(@ShowType int type, List<String> times, List<List<HeartRateBean>> dataList) {
-        reset();
-        curShowType = type;
-        timeStrings = times;
-        this.dataList = dataList;
-    }
-
-    /**
      * 重置状态
      */
     public void reset() {
@@ -769,6 +714,338 @@ public class HeartRateGraphWidget extends View {
             }
             dataList.add(list);
         }
+    }
+
+
+    /**
+     * 设置心跳警告的最大最小值
+     */
+    public void setHeartRateWarnMax(int heartRateWarnMax, int heartRateWarnMin) {
+        this.heartRateWarnMax = heartRateWarnMax;
+        this.heartRateWarnMin = heartRateWarnMin;
+    }
+
+    public int getCurShowType() {
+        return curShowType;
+    }
+
+    /**
+     * 更新当前显示状态
+     */
+    public void setCurShowType(@ShowType int curShowType) {
+        this.curShowType = curShowType;
+        if (showTestData) {
+            getTestDataList(getMaxShowItemCount());
+        }
+    }
+
+    /**
+     * 设置选中的回调
+     */
+    public void setOnItemSelectCallback(HeartRateGraphWidget.onItemSelectCallback onItemSelectCallback) {
+        this.onItemSelectCallback = onItemSelectCallback;
+    }
+
+    /**
+     * 设置时间轴时间
+     */
+    public void setTimeStrings(List<String> timeStrings) {
+        this.timeStrings = timeStrings;
+    }
+
+    /**
+     * 更新心率数据
+     *
+     * @param dataList 心率数据
+     */
+    public void setHeartRateDataList(List<List<HeartRateBean>> dataList) {
+        reset();
+        this.dataList = dataList;
+    }
+
+    /**
+     * @param type     {@link ShowType}显示的类型
+     * @param times    时间轴文字
+     * @param dataList 心率数据
+     */
+    public void setHeartRateShow(@ShowType int type, List<String> times, List<List<HeartRateBean>> dataList) {
+        reset();
+        curShowType = type;
+        timeStrings = times;
+        this.dataList = dataList;
+    }
+
+    /**
+     * 获取每天的数据最多显示点的个数
+     */
+    public int getDayHeartRateMaxShow() {
+        return dayHeartRateMaxShow;
+    }
+
+    /**
+     * 设置每天的数据最多显示点的个数
+     */
+    public void setDayHeartRateMaxShow(int dayHeartRateMaxShow) {
+        this.dayHeartRateMaxShow = dayHeartRateMaxShow;
+    }
+
+    public float getDottedLineHeight() {
+        return dottedLineHeight;
+    }
+
+    /**
+     * 虚线的高度
+     */
+    public void setDottedLineHeight(float dottedLineHeight) {
+        this.dottedLineHeight = dottedLineHeight;
+    }
+
+    public float getDottedLineWidth() {
+        return dottedLineWidth;
+    }
+
+    /**
+     * 虚线的每个实线长度
+     */
+    public void setDottedLineWidth(float dottedLineWidth) {
+        this.dottedLineWidth = dottedLineWidth;
+    }
+
+    public float getDottedLineGap() {
+        return dottedLineGap;
+    }
+
+    /**
+     * 虚线的每个空白间隔
+     */
+    public void setDottedLineGap(float dottedLineGap) {
+        this.dottedLineGap = dottedLineGap;
+    }
+
+    public int getDottedLineColor() {
+        return dottedLineColor;
+    }
+
+    /**
+     * 虚线的颜色
+     */
+    public void setDottedLineColor(int dottedLineColor) {
+        this.dottedLineColor = dottedLineColor;
+    }
+
+    public int getMarkTextColor() {
+        return markTextColor;
+    }
+
+    /**
+     * 坐标系 标记文字的颜色
+     */
+    public void setMarkTextColor(int markTextColor) {
+        this.markTextColor = markTextColor;
+    }
+
+    public int getMaxMinTextColor() {
+        return MaxMinTextColor;
+    }
+
+    /**
+     * 最高最低心率的文字颜色
+     */
+    public void setMaxMinTextColor(int maxMinTextColor) {
+        MaxMinTextColor = maxMinTextColor;
+    }
+
+    public float getMaxYValue() {
+        return maxYValue;
+    }
+
+    /**
+     * Y轴的最大值
+     */
+    public void setMaxYValue(float maxYValue) {
+        this.maxYValue = maxYValue;
+    }
+
+    public float getMaxYValueWidth() {
+        return maxYValueWidth;
+    }
+
+    /**
+     * Y轴的最大值所占宽度
+     */
+    public void setMaxYValueWidth(float maxYValueWidth) {
+        this.maxYValueWidth = maxYValueWidth;
+    }
+
+    public int getMarkTextSize() {
+        return markTextSize;
+    }
+
+    /**
+     * 坐标系 标记文字的大小
+     */
+    public void setMarkTextSize(int markTextSize) {
+        this.markTextSize = markTextSize;
+    }
+
+    public int getMaxMinTextSize() {
+        return MaxMinTextSize;
+    }
+
+    /**
+     * 最高最低心率的文字大小
+     */
+    public void setMaxMinTextSize(int maxMinTextSize) {
+        MaxMinTextSize = maxMinTextSize;
+    }
+
+    public float getMaxMinBlockTopBottomPadding() {
+        return maxMinBlockTopBottomPadding;
+    }
+
+    /**
+     * 最高最低心率框的 上下边距
+     */
+    public void setMaxMinBlockTopBottomPadding(float maxMinBlockTopBottomPadding) {
+        this.maxMinBlockTopBottomPadding = maxMinBlockTopBottomPadding;
+    }
+
+    public float getMaxMinBlockLeftRightPadding() {
+        return maxMinBlockLeftRightPadding;
+    }
+
+    /**
+     * 最高最低心率框的 左右边距
+     */
+    public void setMaxMinBlockLeftRightPadding(float maxMinBlockLeftRightPadding) {
+        this.maxMinBlockLeftRightPadding = maxMinBlockLeftRightPadding;
+    }
+
+    public int getMaxMinBgColor() {
+        return maxMinBgColor;
+    }
+
+    /**
+     * 最高最低心率框的 背景颜色
+     */
+    public void setMaxMinBgColor(int maxMinBgColor) {
+        this.maxMinBgColor = maxMinBgColor;
+    }
+
+    public float getMaxMinTriAngleHeight() {
+        return maxMinTriAngleHeight;
+    }
+
+    /**
+     * 最高最低心率框的 三角形高度
+     */
+    public void setMaxMinTriAngleHeight(float maxMinTriAngleHeight) {
+        this.maxMinTriAngleHeight = maxMinTriAngleHeight;
+    }
+
+    public String getMaxMinFormat() {
+        return maxMinFormat;
+    }
+
+    /**
+     * 最大最小值的显示格式  默认 "%d bmp"
+     */
+    public void setMaxMinFormat(String maxMinFormat) {
+        this.maxMinFormat = maxMinFormat;
+    }
+
+    public int getDayHeartRateLineColor() {
+        return dayHeartRateLineColor;
+    }
+
+    /**
+     * 每日心率折线图的颜色
+     */
+    public void setDayHeartRateLineColor(int dayHeartRateLineColor) {
+        this.dayHeartRateLineColor = dayHeartRateLineColor;
+    }
+
+    public float getDayHeartRateLineWidth() {
+        return dayHeartRateLineWidth;
+    }
+
+    /**
+     * 每日心率折线图的宽度
+     */
+    public void setDayHeartRateLineWidth(float dayHeartRateLineWidth) {
+        this.dayHeartRateLineWidth = dayHeartRateLineWidth;
+    }
+
+    public float getHistogramWidth() {
+        return histogramWidth;
+    }
+
+    /**
+     * 柱状图的线宽度
+     */
+    public void setHistogramWidth(float histogramWidth) {
+        this.histogramWidth = histogramWidth;
+    }
+
+    public int getHistogramLineColor() {
+        return histogramLineColor;
+    }
+
+    /**
+     * 柱状图的线的颜色
+     */
+    public void setHistogramLineColor(int histogramLineColor) {
+        this.histogramLineColor = histogramLineColor;
+    }
+
+    public int getHeartRateWarnMax() {
+        return heartRateWarnMax;
+    }
+
+    /**
+     * 心跳警告的最大值
+     */
+    public void setHeartRateWarnMax(int heartRateWarnMax) {
+        this.heartRateWarnMax = heartRateWarnMax;
+    }
+
+    public int getHeartRateWarnMin() {
+        return heartRateWarnMin;
+    }
+
+    /**
+     * 心跳警告的最小值
+     */
+    public void setHeartRateWarnMin(int heartRateWarnMin) {
+        this.heartRateWarnMin = heartRateWarnMin;
+    }
+
+    /**
+     * 心跳警告线的颜色
+     */
+    public int getHeartRateWarnLineColor() {
+        return heartRateWarnLineColor;
+    }
+
+    /**
+     * 心跳警告线的颜色
+     */
+    public void setHeartRateWarnLineColor(int heartRateWarnLineColor) {
+        this.heartRateWarnLineColor = heartRateWarnLineColor;
+    }
+
+    /**
+     * 心跳警告线的高度
+     */
+    public int getHeartRateWarnLineHeight() {
+        return heartRateWarnLineHeight;
+    }
+
+    /**
+     * 心跳警告线的高度
+     */
+    public void setHeartRateWarnLineHeight(int heartRateWarnLineHeight) {
+        this.heartRateWarnLineHeight = heartRateWarnLineHeight;
     }
 
     @IntDef({DAY, WEEK, MONTH, YEAR})

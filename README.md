@@ -19,7 +19,7 @@ allprojects {
 add to the app  `build.gradle`
 ```
 dependencies {
-        implementation 'com.github.103style:HeartRateGraph:0.0.9'
+        implementation 'com.github.103style:HeartRateGraph:1.0.0'
 }
 
 ```
@@ -173,28 +173,31 @@ dependencies {
 ###  Method:
 ```
 /**
- * 设置选中的回调
- */
-public void setOnItemSelectCallback(HeartRateGraphWidget.onItemSelectCallback onItemSelectCallback)
-
-
-/**
  * 设置心跳警告的最大最小值
  */
-public void setHeartRateWarnMax(int heartRateWarnMax, int heartRateWarnMin)
+public void setHeartRateWarnMax(int heartRateWarnMax, int heartRateWarnMin) {
+    this.heartRateWarnMax = heartRateWarnMax;
+    this.heartRateWarnMin = heartRateWarnMin;
+}
 
 /**
  * 更新当前显示状态
  */
+public int getCurShowType()
 public void setCurShowType(@ShowType int curShowType)
 
 /**
- * 设置时间轴时间数据
+ * 设置选中的回调
+ */
+public void setOnItemSelectCallback(HeartRateGraphWidget.onItemSelectCallback onItemSelectCallback)
+
+/**
+ * 设置时间轴时间
  */
 public void setTimeStrings(List<String> timeStrings)
 
 /**
- * 设置心率数据
+ * 更新心率数据
  *
  * @param dataList 心率数据
  */
@@ -206,6 +209,151 @@ public void setHeartRateDataList(List<List<HeartRateBean>> dataList)
  * @param dataList 心率数据
  */
 public void setHeartRateShow(@ShowType int type, List<String> times, List<List<HeartRateBean>> dataList)
+
+/**
+ * 设置每天的数据最多显示点的个数
+ */
+public int getDayHeartRateMaxShow()
+public void setDayHeartRateMaxShow(int dayHeartRateMaxShow)
+
+/**
+ * 虚线的高度
+ */
+public float getDottedLineHeight()
+public void setDottedLineHeight(float dottedLineHeight)}
+
+/**
+ * 虚线的每个实线长度
+ */
+public float getDottedLineWidth()
+public void setDottedLineWidth(float dottedLineWidth)
+
+/**
+ * 虚线的每个空白间隔
+ */
+public float getDottedLineGap()
+public void setDottedLineGap(float dottedLineGap)
+
+/**
+ * 虚线的颜色
+ */
+public int getDottedLineColor()
+public void setDottedLineColor(int dottedLineColor)
+
+/**
+ * 坐标系 标记文字的颜色
+ */
+public int getMarkTextColor()
+public void setMarkTextColor(int markTextColor)
+
+/**
+ * 最高最低心率的文字颜色
+ */
+public int getMaxMinTextColor()
+public void setMaxMinTextColor(int maxMinTextColor)
+
+/**
+ * Y轴的最大值
+ */
+public float getMaxYValue()
+public void setMaxYValue(float maxYValue)
+
+/**
+ * Y轴的最大值所占宽度
+ */
+public float getMaxYValueWidth()
+public void setMaxYValueWidth(float maxYValueWidth)
+
+/**
+ * 坐标系 标记文字的大小
+ */
+public int getMarkTextSize()
+public void setMarkTextSize(int markTextSize)
+
+/**
+ * 最高最低心率的文字大小
+ */
+public int getMaxMinTextSize()
+public void setMaxMinTextSize(int maxMinTextSize)
+
+/**
+ * 最高最低心率框的 上下边距
+ */
+public float getMaxMinBlockTopBottomPadding()
+public void setMaxMinBlockTopBottomPadding(float maxMinBlockTopBottomPadding)
+
+/**
+ * 最高最低心率框的 左右边距
+ */
+public float getMaxMinBlockLeftRightPadding()
+public void setMaxMinBlockLeftRightPadding(float maxMinBlockLeftRightPadding)
+
+
+/**
+ * 最高最低心率框的 背景颜色
+ */
+public int getMaxMinBgColor()
+public void setMaxMinBgColor(int maxMinBgColor)
+
+/**
+ * 最高最低心率框的 三角形高度
+ */
+public float getMaxMinTriAngleHeight()
+public void setMaxMinTriAngleHeight(float maxMinTriAngleHeight)
+
+/**
+ * 最大最小值的显示格式  默认 "%d bmp"
+ */
+public String getMaxMinFormat()
+public void setMaxMinFormat(String maxMinFormat)
+
+/**
+ * 每日心率折线图的颜色
+ */
+public int getDayHeartRateLineColor()
+public void setDayHeartRateLineColor(int dayHeartRateLineColor)
+
+/**
+ * 每日心率折线图的宽度
+ */
+public float getDayHeartRateLineWidth()
+public void setDayHeartRateLineWidth(float dayHeartRateLineWidth)
+
+/**
+ * 柱状图的线宽度
+ */
+public float getHistogramWidth()
+public void setHistogramWidth(float histogramWidth)
+
+/**
+ * 柱状图的线的颜色
+ */
+public int getHistogramLineColor()
+public void setHistogramLineColor(int histogramLineColor)
+
+/**
+ * 心跳警告的最大值
+ */
+public int getHeartRateWarnMax()
+public void setHeartRateWarnMax(int heartRateWarnMax)
+
+/**
+ * 心跳警告的最小值
+ */
+public int getHeartRateWarnMin()
+public void setHeartRateWarnMin(int heartRateWarnMin)
+
+/**
+ * 心跳警告线的颜色
+ */
+public int getHeartRateWarnLineColor()
+public void setHeartRateWarnLineColor(int heartRateWarnLineColor)
+
+/**
+ * 心跳警告线的高度
+ */
+public int getHeartRateWarnLineHeight()
+public void setHeartRateWarnLineHeight(int heartRateWarnLineHeight)
 ```
 
 ---
