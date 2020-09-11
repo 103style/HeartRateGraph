@@ -4,6 +4,10 @@
 
 <img src="https://github.com/103style/HeartRateGraph/blob/master/screenshot/minute.jpg"  height="432" width="216"> <img src="https://github.com/103style/HeartRateGraph/blob/master/screenshot/day.jpg"  height="432" width="216">
 
+
+
+<img src="https://github.com/103style/HeartRateGraph/blob/master/screenshot/demo.gif">
+
 ---
 
 #### Install
