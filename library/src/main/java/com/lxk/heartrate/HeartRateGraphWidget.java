@@ -119,6 +119,10 @@ public class HeartRateGraphWidget extends View {
      */
     private LinearGradient linearGradient, selectLineGradient;
     /**
+     * DAY模式下是否显示柱状图
+     */
+    private boolean showHistogramInDayType;
+    /**
      * 柱状图的宽度
      */
     private float histogramWidth;
@@ -245,6 +249,7 @@ public class HeartRateGraphWidget extends View {
             maxMinFormat = ta.getString(R.styleable.HeartRateGraphWidget_hrg_max_min_text_format);
         }
 
+        showHistogramInDayType = ta.getBoolean(R.styleable.HeartRateGraphWidget_hrg_show_histogram_in_day_type, false);
         dayHeartRateLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_day_heart_rate_line_color, 0xFFF33838);
         dayHeartRateLineWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_day_heart_rate_line_with, 5);
         dayHeartRateMaxShow = ta.getInt(R.styleable.HeartRateGraphWidget_hrg_day_heart_rate_dot_max_show, 144);
@@ -525,11 +530,16 @@ public class HeartRateGraphWidget extends View {
                 checkSelectItem(beans.get(i), x, perX / 2);
                 int rate = beans.get(i).heartRate;
                 float y = xLineYPosition - rate * preY;
-                if (i == 0) {
-                    dayHeartRateShaderPath.moveTo(x, xLineYPosition);
+                if (showHistogramInDayType) {
                     dayHeartRatePath.moveTo(x, y);
+                    dayHeartRatePath.lineTo(x, xLineYPosition);
                 } else {
-                    dayHeartRatePath.lineTo(x, y);
+                    if (i == 0) {
+                        dayHeartRateShaderPath.moveTo(x, xLineYPosition);
+                        dayHeartRatePath.moveTo(x, y);
+                    } else {
+                        dayHeartRatePath.lineTo(x, y);
+                    }
                 }
                 dayHeartRateShaderPath.lineTo(x, y);
                 if (rate > max) {
@@ -548,7 +558,7 @@ public class HeartRateGraphWidget extends View {
             }
         }
         canvas.drawPath(dayHeartRatePath, dayHeartRatePaint);
-        if (showDayShader) {
+        if (showDayShader && !showHistogramInDayType) {
             dayHeartRatePaint.setShader(getDailyShader(maxPosition[1]));
             canvas.drawPath(dayHeartRateShaderPath, dayHeartRatePaint);
             dayHeartRatePaint.setStyle(Paint.Style.FILL);
@@ -1046,6 +1056,17 @@ public class HeartRateGraphWidget extends View {
      */
     public void setHeartRateWarnLineHeight(int heartRateWarnLineHeight) {
         this.heartRateWarnLineHeight = heartRateWarnLineHeight;
+    }
+
+    public boolean isShowHistogramInDayType() {
+        return showHistogramInDayType;
+    }
+
+    /**
+     * 设置在 DAY 模式下是否显示柱状图
+     */
+    public void setShowHistogramInDayType(boolean showHistogramInDayType) {
+        this.showHistogramInDayType = showHistogramInDayType;
     }
 
     @IntDef({DAY, WEEK, MONTH, YEAR})

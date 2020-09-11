@@ -19,7 +19,7 @@ allprojects {
 add to the app  `build.gradle`
 ```
 dependencies {
-        implementation 'com.github.103style:HeartRateGraph:1.0.0'
+        implementation 'com.github.103style:HeartRateGraph:1.0.1'
 }
 
 ```
@@ -64,6 +64,7 @@ dependencies {
     app:hrg_shader_color_end="#00F33838"
     app:hrg_shader_color_start="#B3F33838"
     app:hrg_show_day_shader="true"
+    app:hrg_show_histogram_in_day_type="false"
     app:hrg_show_max_min="false"
     app:hrg_show_test_data="true"
     app:hrg_solid_line_color="#26000000"
@@ -135,6 +136,8 @@ dependencies {
     <attr name="hrg_day_heart_rate_line_with" format="dimension" />
     <!--  每天按分钟显示的折线图最多显示多少个点  默认 144个点-->
     <attr name="hrg_day_heart_rate_dot_max_show" format="integer" />
+    <!--  每天类型 用 柱状图显示   -->
+    <attr name="hrg_show_histogram_in_day_type" format="boolean"/>
 
     <!--  柱状图的宽度  -->
     <attr name="hrg_histogram_with" format="dimension" />
@@ -354,6 +357,13 @@ public void setHeartRateWarnLineColor(int heartRateWarnLineColor)
  */
 public int getHeartRateWarnLineHeight()
 public void setHeartRateWarnLineHeight(int heartRateWarnLineHeight)
+
+/**
+ * 设置在 DAY 模式下是否显示柱状图
+ */
+public boolean isShowHistogramInDayType()
+public void setShowHistogramInDayType(boolean showHistogramInDayType)
+
 ```
 
 ---

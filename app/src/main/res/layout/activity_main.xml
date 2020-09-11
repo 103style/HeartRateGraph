@@ -71,12 +71,13 @@
         app:hrg_shader_color_end="#00F33838"
         app:hrg_shader_color_start="#B3F33838"
         app:hrg_show_day_shader="true"
-        app:hrg_show_max_min="true"
+        app:hrg_show_histogram_in_day_type="false"
+        app:hrg_show_max_min="false"
         app:hrg_show_test_data="true"
         app:hrg_solid_line_color="#26000000"
         app:hrg_solid_line_height="1dp"
         app:hrg_time_line_bottom_margin="40dp"
-        app:hrg_time_line_to_x_line_height="35dp"
+        app:hrg_time_line_to_x_line_height="20dp"
         app:hrg_time_string_top_margin="16dp"
         app:hrg_y_value_string_array="@array/y_values" />
 
