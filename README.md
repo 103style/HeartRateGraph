@@ -23,7 +23,7 @@ allprojects {
 add to the app  `build.gradle`
 ```
 dependencies {
-        implementation 'com.github.103style:HeartRateGraph:1.0.1'
+        implementation 'com.github.103style:HeartRateGraph:1.0.2'
 }
 
 ```
@@ -40,8 +40,8 @@ dependencies {
     android:background="#FFFFFF"
     android:padding="24dp"
     app:hrg_cur_show_type="DAY"
-    app:hrg_day_heart_rate_dot_max_show="50"
-    app:hrg_day_heart_rate_line_color="#FFF33838"
+    app:hrg_day_heart_rate_dot_max_show="20"
+    app:hrg_day_heart_rate_line_color="#FFFFCC95"
     app:hrg_day_heart_rate_line_with="1dp"
     app:hrg_dotted_line_color="#26000000"
     app:hrg_dotted_line_gap="1dp"
@@ -60,21 +60,23 @@ dependencies {
     app:hrg_max_min_text_size="12sp"
     app:hrg_max_min_text_top_bottom_padding="2dp"
     app:hrg_max_min_text_triangle_height="5dp"
-    app:hrg_select_line_color_end="#00FF9319"
-    app:hrg_select_line_color_in_histogram="#FFFF8700"
-    app:hrg_select_line_color_middle="#FFFF9319"
-    app:hrg_select_line_color_start="#2AFF9319"
+    app:hrg_select_last_data_default="true"
+    app:hrg_select_line_below_point="true"
+    app:hrg_select_line_color_end="#0FFFF0"
+    app:hrg_select_line_color_in_histogram="#0FFFF0"
+    app:hrg_select_line_color_middle="#0FFFF0"
+    app:hrg_select_line_color_start="#0FFFF0"
     app:hrg_select_line_width="1dp"
     app:hrg_shader_color_end="#00F33838"
     app:hrg_shader_color_start="#B3F33838"
     app:hrg_show_day_shader="true"
     app:hrg_show_histogram_in_day_type="false"
-    app:hrg_show_max_min="false"
+    app:hrg_show_max_min="true"
     app:hrg_show_test_data="true"
     app:hrg_solid_line_color="#26000000"
     app:hrg_solid_line_height="1dp"
     app:hrg_time_line_bottom_margin="40dp"
-    app:hrg_time_line_to_x_line_height="35dp"
+    app:hrg_time_line_to_x_line_height="20dp"
     app:hrg_time_string_top_margin="16dp"
     app:hrg_y_value_string_array="@array/y_values" />
 ```
@@ -148,6 +150,10 @@ dependencies {
     <!--  柱状图线的颜色  -->
     <attr name="hrg_histogram_line_color" format="color" />
 
+    <!--  选中线是否是从0 到 选中点  -->
+    <attr name="hrg_select_line_below_point" format="boolean" />
+    <!--  是否默认选中最后一条数据   -->
+    <attr name="hrg_select_last_data_default" format="boolean" />
     <!-- 标记选中item的线的宽度 -->
     <attr name="hrg_select_line_width" format="dimension" />
     <!-- 标记选中item的线的颜色 -->

@@ -146,6 +146,11 @@ public class HeartRateGraphWidget extends View {
      * 每天的心率折线图的阴影的开始和结束颜色
      */
     private int shaderColorStart, shaderColorEnd;
+
+    /**
+     * DAY 模式下 的选中线 是否 只是 从 0 到选中点
+     */
+    private boolean selectLineBelowPoint;
     /**
      * 选中线的渐变颜色
      */
@@ -182,9 +187,14 @@ public class HeartRateGraphWidget extends View {
      */
     private onItemSelectCallback onItemSelectCallback;
     /**
-     * 选中item的 x坐标
+     * 选中item的 x, y坐标
      */
     private float selectedPointX = -1;
+    private float selectedPointY = 0;
+    /**
+     * 是否默认选中最后一条数据
+     */
+    private boolean selectLastDataDefault;
     /**
      * 选中柱状图item的 最大最小坐标
      */
@@ -259,6 +269,8 @@ public class HeartRateGraphWidget extends View {
         histogramWidth = ta.getDimensionPixelOffset(R.styleable.HeartRateGraphWidget_hrg_histogram_with, DensityUtils.dpToPx(context, 4));
         histogramLineColor = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_histogram_line_color, 0xFFD8D8D8);
 
+        selectLineBelowPoint = ta.getBoolean(R.styleable.HeartRateGraphWidget_hrg_select_line_below_point, false);
+        selectLastDataDefault = ta.getBoolean(R.styleable.HeartRateGraphWidget_hrg_select_last_data_default, false);
         selectLineColorStart = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_select_line_color_start, 0x2AFF9319);
         selectLineColorMiddle = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_select_line_color_middle, 0xFFFF9319);
         selectLineColorEnd = ta.getColor(R.styleable.HeartRateGraphWidget_hrg_select_line_color_end, 0x2AFF9319);
@@ -306,6 +318,9 @@ public class HeartRateGraphWidget extends View {
     public void reset() {
         timeStrings = null;
         dataList = null;
+        if (showTestData) {
+            getTestDataList(getMaxShowItemCount());
+        }
         linearGradient = null;
         selectLineGradient = null;
         touchedX = touchedY = -1;
@@ -459,7 +474,7 @@ public class HeartRateGraphWidget extends View {
             selectPaint.setStrokeCap(Paint.Cap.BUTT);
             selectPaint.setStrokeWidth(selectLineWidth);
             selectPaint.setShader(getSelectLineGradient());
-            canvas.drawLine(selectedPointX, contentTop, selectedPointX, xLineYPosition, selectPaint);
+            canvas.drawLine(selectedPointX, selectLineBelowPoint ? selectedPointY : contentTop, selectedPointX, xLineYPosition, selectPaint);
             return;
         }
         if (selectedHistogramMin == -1) {
@@ -524,12 +539,13 @@ public class HeartRateGraphWidget extends View {
         int max = 0, min = Integer.MAX_VALUE;
         float[] maxPosition = new float[2];
         float[] minPosition = new float[2];
-        for (List<HeartRateBean> beans : dataList) {
+        for (int j = 0; j < dataList.size(); j++) {
+            List<HeartRateBean> beans = dataList.get(j);
             for (int i = 0; i < beans.size(); i++) {
                 float x = startX + perX * beans.get(i).index;
-                checkSelectItem(beans.get(i), x, perX / 2);
                 int rate = beans.get(i).heartRate;
                 float y = xLineYPosition - rate * preY;
+                checkSelectItem(beans.get(i), x, y, perX / 2);
                 if (showHistogramInDayType) {
                     dayHeartRatePath.moveTo(x, y);
                     dayHeartRatePath.lineTo(x, xLineYPosition);
@@ -554,6 +570,11 @@ public class HeartRateGraphWidget extends View {
                 }
                 if (i + 1 == beans.size()) {
                     dayHeartRateShaderPath.lineTo(x, xLineYPosition);
+                }
+
+                if (checkDefaultSelect(dataList, j, i)) {
+                    selectedPointX = x;
+                    selectedPointY = y;
                 }
             }
         }
@@ -588,12 +609,13 @@ public class HeartRateGraphWidget extends View {
      * @param x             当前的 x 坐标
      * @param range         有效的区间
      */
-    private void checkSelectItem(HeartRateBean heartRateBean, float x, float range) {
+    private void checkSelectItem(HeartRateBean heartRateBean, float x, float y, float range) {
         if (touchedX == -1) {
             return;
         }
         if (Math.abs(x - touchedX) < range) {
             selectedPointX = x;
+            selectedPointY = y;
             if (onItemSelectCallback != null) {
                 onItemSelectCallback.onItemSelected(heartRateBean);
             }
@@ -661,12 +683,14 @@ public class HeartRateGraphWidget extends View {
         float[] maxPosition = new float[2];
         float[] minPosition = new float[2];
 
-        for (List<HeartRateBean> beans : dataList) {
-            for (HeartRateBean bean : beans) {
+        for (int i = 0; i < dataList.size(); i++) {
+            List<HeartRateBean> beans = dataList.get(i);
+            for (int j = 0; j < beans.size(); j++) {
+                HeartRateBean bean = beans.get(j);
                 float x = contentLeft + maxYValueWidth + perWidth * (bean.index + 1) - perWidth / 2 - histogramWidth / 2;
-                checkSelectItem(bean, x, histogramWidth * 2);
                 float top = xLineYPosition - bean.max * preHeight;
                 float bottom = xLineYPosition - bean.min * preHeight;
+                checkSelectItem(bean, x, top, histogramWidth * 2);
                 if (Float.valueOf(selectedPointX).equals(x)) {
                     selectedHistogramMax = top;
                     selectedHistogramMin = bottom;
@@ -681,6 +705,13 @@ public class HeartRateGraphWidget extends View {
                     minPosition[0] = x;
                     minPosition[1] = bottom;
                 }
+
+                if (checkDefaultSelect(dataList, i, j)) {
+                    selectedPointX = x;
+                    selectedHistogramMax = top;
+                    selectedHistogramMin = bottom;
+                }
+
                 histogramPaint.setStyle(Paint.Style.STROKE);
                 histogramPaint.setStrokeWidth(histogramWidth);
                 histogramPaint.setColor(histogramLineColor);
@@ -690,6 +721,21 @@ public class HeartRateGraphWidget extends View {
         drawMaxMin(max, min, maxPosition, minPosition, canvas);
     }
 
+    /**
+     * 默认选中最后一条数据
+     */
+    private boolean checkDefaultSelect(List<List<HeartRateBean>> dataList, int i, int j) {
+        if (!selectLastDataDefault || touchedX != -1) {
+            return false;
+        }
+        if (i + 1 == dataList.size() && j + 1 == dataList.get(i).size()) {
+            if (onItemSelectCallback != null) {
+                onItemSelectCallback.onItemSelected(dataList.get(i).get(j));
+            }
+            return true;
+        }
+        return false;
+    }
 
     private List<String> getTestList() {
         List<String> res = new ArrayList<>();

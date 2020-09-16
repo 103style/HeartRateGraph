@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 heartRateGraphWidget.setCurShowType(HeartRateGraphWidget.WEEK);
+                heartRateGraphWidget.reset();
                 heartRateGraphWidget.postInvalidate();
             }
         });
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 heartRateGraphWidget.setCurShowType(HeartRateGraphWidget.DAY);
+                heartRateGraphWidget.reset();
                 heartRateGraphWidget.postInvalidate();
             }
         });

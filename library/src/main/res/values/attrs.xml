@@ -66,6 +66,10 @@
     <!--  柱状图线的颜色  -->
     <attr name="hrg_histogram_line_color" format="color" />
 
+    <!--  选中线是否是从0 到 选中点  -->
+    <attr name="hrg_select_line_below_point" format="boolean" />
+    <!--  是否默认选中最后一条数据   -->
+    <attr name="hrg_select_last_data_default" format="boolean" />
     <!-- 标记选中item的线的宽度 -->
     <attr name="hrg_select_line_width" format="dimension" />
     <!-- 标记选中item的线的颜色 -->
